@@ -1,6 +1,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+
 import React, { StrictMode } from 'react';
 
 import {
@@ -12,6 +13,8 @@ import { createRoot } from 'react-dom/client';
 import configuration from './config';
 import messages from './i18n';
 import MainApp from './MainApp';
+
+import './sass/logistration_shell';
 
 subscribe(APP_READY, () => {
   const root = createRoot(document.getElementById('root'));
