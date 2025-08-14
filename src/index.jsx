@@ -14,7 +14,8 @@ import configuration from './config';
 import messages from './i18n';
 import MainApp from './MainApp';
 
-import './sass/logistration_shell';
+import './index.scss';
+
 
 subscribe(APP_READY, () => {
   const root = createRoot(document.getElementById('root'));
