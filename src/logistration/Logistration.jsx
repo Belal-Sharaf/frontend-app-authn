@@ -23,9 +23,9 @@ import { clearThirdPartyAuthContextErrorMessage } from '../common-components/dat
 
 const Logistration = ({
   selectedPage,
-  backupLoginForm: backupLoginFormAction,
-  backupRegistrationForm: backupRegistrationFormAction,
-  clearThirdPartyAuthContextErrorMessage: clearTPAError,
+  backupLoginForm,
+  backupRegistrationForm,
+  clearThirdPartyAuthContextErrorMessage,
 }) => {
   const { formatMessage } = useIntl();
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const Logistration = ({
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
-  // Which form to show
+  // Initial mode derived from route
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   useEffect(() => {
     setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');
@@ -44,26 +44,26 @@ const Logistration = ({
 
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
 
+  // Toggle helpers (hero buttons replace the old tabs)
   const goLogin = () => {
     sendTrackEvent('edx.bi.login_form.toggled', { from: 'card', category: 'user-engagement' });
-    clearTPAError();
-    backupRegistrationFormAction();
+    clearThirdPartyAuthContextErrorMessage();
+    backupRegistrationForm();
     setMode('login');
     navigate(updatePathWithQueryParams(LOGIN_PAGE), { replace: true });
   };
 
   const goRegister = () => {
     sendTrackEvent('edx.bi.register_form.toggled', { from: 'card', category: 'user-engagement' });
-    clearTPAError();
-    backupLoginFormAction();
+    clearThirdPartyAuthContextErrorMessage();
+    backupLoginForm();
     setMode('register');
     navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
   };
 
-  // Logo inside the white square (SVG with PNG fallback)
-  const logoSvg = `${getConfig().LMS_BASE_URL}/theming/assets/img/logo.svg`;
-  const logoPng = `${getConfig().LMS_BASE_URL}/theming/assets/img/logo.png`;
-  const [heroLogo, setHeroLogo] = useState(logoSvg);
+  // Themable logo from your theme (served by LMS theming endpoint)
+  const LMS = (getConfig().LMS_BASE_URL || '').replace(/\/+$/, '');
+  const logoUrl = `${LMS}/theming/asset/images/logo.png`;
 
   return (
     <div className="c-shell">
@@ -71,14 +71,8 @@ const Logistration = ({
         <div className="c-card__inner">
           {/* Blue hero panel */}
           <aside className="c-card__hero" aria-label="Welcome">
-            <div className="mark mark--with-logo" aria-hidden>
-              <img
-                src={heroLogo}
-                onError={() => setHeroLogo(logoPng)}
-                alt="Cogens"
-                decoding="async"
-                fetchPriority="low"
-              />
+            <div className="c-card__mark" aria-hidden="true">
+              <img src={logoUrl} alt="Cogens" className="c-card__logo" />
             </div>
 
             <h3 className="c-card__title">
@@ -86,7 +80,6 @@ const Logistration = ({
             </h3>
             <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
-            {/* CTAs replace tabs */}
             <div className="c-card__ctas">
               {mode === 'login' ? (
                 !disablePublicAccountCreation && (
@@ -102,8 +95,14 @@ const Logistration = ({
             </div>
           </aside>
 
-          {/* Form area */}
+          {/* Right side form area */}
           <main className="c-card__form">
+            <header className="c-card__formHead">
+              <h1>Start learning<br />with Cogens</h1>
+              <p>High-quality courses, taught by experts.</p>
+            </header>
+
+            {/* No more faux button above inputs – it is removed */}
             {mode === 'login' ? (
               <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
             ) : (
