@@ -1,22 +1,21 @@
 // src/logistration/Logistration.jsx
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthService } from '@edx/frontend-platform/auth';
 import { sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { useIntl } from '@edx/frontend-platform/i18n';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-
-import BaseContainer from '../base-container';
-import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
-import { updatePathWithQueryParams } from '../data/utils';
 
 import { LoginPage } from '../login';
-import loginMessages from '../login/messages';               // ✅ correct source
+import loginMessages from '../login/messages';
 import { RegistrationPage } from '../register';
-import registerMessages from '../register/messages';         // ✅ correct source
+import registerMessages from '../register/messages';
+
+import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
+import { updatePathWithQueryParams } from '../data/utils';
 
 import { backupLoginForm } from '../login/data/actions';
 import { backupRegistrationForm } from '../register/data/actions';
@@ -28,15 +27,13 @@ const Logistration = ({
   backupRegistrationForm,
   clearThirdPartyAuthContextErrorMessage,
 }) => {
-  const navigate = useNavigate();
   const { formatMessage } = useIntl();
+  const navigate = useNavigate();
 
-  // Ensure CSRF cookie
+  // Ensure CSRF is available
   useEffect(() => {
-    const svc = getAuthService();
-    if (svc) {
-      svc.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
-    }
+    const s = getAuthService();
+    if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
   // Which form to show
@@ -64,54 +61,44 @@ const Logistration = ({
   };
 
   return (
-    <BaseContainer>
-      <section className="c-card-only page-safe-area">
-        <div className="c-card">
-          <div className="c-card__inner">
-            {/* Blue hero panel */}
-            <aside className="c-card__hero">
-              <div className="c-card__mark" aria-hidden />
-              <h3 className="c-card__title">
-                Start<br />learning<br /><span className="accent">with Cogens</span>
-              </h3>
-              <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
+    <div className="c-shell">
+      <div className="c-card">
+        <div className="c-card__inner">
+          {/* Blue hero panel */}
+          <aside className="c-card__hero" aria-label="Welcome">
+            <div className="c-card__mark" aria-hidden />
+            <h3 className="c-card__title">
+              Start<br />learning<br /><span className="accent">with Cogens</span>
+            </h3>
+            <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
-              {/* CTAs replace tabs */}
-              <div className="c-card__ctas">
-                {mode === 'login' ? (
-                  !disablePublicAccountCreation && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-light btn-lg"
-                      onClick={goRegister}
-                    >
-                      {formatMessage(registerMessages['create.account.for.free.button'])}
-                    </button>
-                  )
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-outline-light btn-lg"
-                    onClick={goLogin}
-                  >
-                    {formatMessage(loginMessages['sign.in.button'])}
-                  </button>
-                )}
-              </div>
-            </aside>
-
-            {/* Form area */}
-            <main className="c-card__form">
+            {/* CTAs replace tabs */}
+            <div className="c-card__ctas">
               {mode === 'login' ? (
-                <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+                !disablePublicAccountCreation && (
+                  <button type="button" className="btn btn-outline-light btn-lg" onClick={goRegister}>
+                    {formatMessage(registerMessages['create.account.for.free.button'])}
+                  </button>
+                )
               ) : (
-                <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+                <button type="button" className="btn btn-outline-light btn-lg" onClick={goLogin}>
+                  {formatMessage(loginMessages['sign.in.button'])}
+                </button>
               )}
-            </main>
-          </div>
+            </div>
+          </aside>
+
+          {/* Form area */}
+          <main className="c-card__form">
+            {mode === 'login' ? (
+              <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+            ) : (
+              <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+            )}
+          </main>
         </div>
-      </section>
-    </BaseContainer>
+      </div>
+    </div>
   );
 };
 
