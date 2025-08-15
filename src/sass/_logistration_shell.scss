@@ -1,97 +1,83 @@
-/* ===== Brand tokens — tweak these to your palette ===== */
-:root {
-  --brand-primary:   #1D3A70;   /* deep blue */
-  --brand-secondary: #2a68c5;   /* gradient mate */
-  --brand-accent:    #1e56c5;   /* buttons/active tab */
-  --brand-highlight: #10b7f4;   /* accent word in headline */
+/* ===== Card-only page ===== */
+.page-safe-area { padding: clamp(12px, 2vw, 24px); }
+
+.c-card-only {
+  min-height: calc(100vh - 72px);   /* leave room for header */
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(80rem 80rem at -20% 120%, rgba(30,81,208,.06), transparent 60%),
+    radial-gradient(80rem 80rem at 110% -20%, rgba(11,114,231,.06), transparent 60%),
+    #f7f9fc;
 }
 
-/* ===== Card shell ====================================================== */
-.c-logistration {
+.c-card {
+  width: min(1100px, 96vw);
+  background: #fff;
+  border-radius: 22px;
+  box-shadow:
+    0 26px 72px rgba(13, 25, 58, .16),
+    0 8px 28px rgba(13, 25, 58, .10);
+  padding: clamp(16px, 2.6vw, 28px);
+}
+
+.c-card__inner {
   position: relative;
   display: grid;
-  grid-template-columns: 40% 60%;
-  align-items: stretch;
-  width: min(1120px, 100%);
-  margin: 32px auto;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 16px 48px rgba(0,0,0,.10);
-  overflow: hidden;
+  grid-template-columns: clamp(280px, 32vw, 380px) 1fr;
+  gap: clamp(18px, 3vw, 32px);
+  align-items: center;
 }
 
-/* ----- Left Panel (blue) ---------------------------------------------- */
-.c-logistration__left {
-  position: relative;
-  background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+/* Blue hero panel */
+.c-card__hero {
+  background: linear-gradient(160deg, #1e51d0, #0b72e7);
   color: #fff;
-  padding: 44px 36px;
+  border-radius: 18px;
+  padding: clamp(18px, 2.2vw, 28px);
+  min-height: clamp(280px, 34vw, 360px);
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
 }
-.c-logistration__brand img {
-  width: 40px; height: 40px; object-fit: contain; margin-bottom: 18px;
-  filter: brightness(0) invert(1); opacity: .95;
-}
-.c-logistration .hero h1 { font-size: 44px; line-height: 1.1; margin: 12px 0 8px; font-weight: 800; }
-.c-logistration .hero h1 .hl { color: var(--brand-highlight); }
-.c-logistration .hero p  { opacity: .92; margin: 0 0 22px; }
+.c-card__mark { width:26px; height:26px; border-radius:6px; background:#fff; opacity:.9; }
+.c-card__title { margin:6px 0 6px; font-weight:800; line-height:1.05; letter-spacing:-.01em; font-size:clamp(28px,3.2vw,44px); }
+.c-card__title .accent { color:#27d1f3; }
+.c-card__subtitle { margin:0 0 10px; opacity:.92; }
+.c-card__ctas { margin-top:auto; }
 
-/* ----- Right Panel (form) --------------------------------------------- */
-.c-logistration__right {
+/* Form area */
+.c-card__form { position:relative; z-index:3; }
+.c-card__form .mw-xs,
+.c-card__form .main-content {
+  width: 100%;
+  max-width: 620px;
+  margin: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+.c-card__form .btn-brand,
+.c-card__form .btn-primary {
+  background: #1e51d0 !important;
+  border-color: #1e51d0 !important;
+}
+.c-card__form .btn-brand:hover,
+.c-card__form .btn-primary:hover {
+  background: #0b72e7 !important;
+  border-color: #0b72e7 !important;
+}
+
+/* Keep "Forgot password" readable & aligned */
+#forgot-password {
+  display: inline-block;
+  margin-left: 10px;
   position: relative;
-  padding: 44px 36px;
-  display: flex; align-items: center; justify-content: center;
-  background: #fff;
-}
-/* Slanted white divider creating the wedge look */
-.c-logistration__right::before {
-  content: "";
-  position: absolute;
-  left: -70px; top: 0; bottom: 0; width: 140px;
-  background: #fff; transform: skewX(-12deg);
-  pointer-events: none;
-}
-.c-logistration__form { width: 100%; max-width: 520px; }
-
-/* ----- Inputs / links -------------------------------------------------- */
-.c-logistration .form-control { height: 46px; border-radius: 12px; }
-.c-logistration .form-control:focus {
-  border-color: var(--brand-accent);
-  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--brand-accent) 20%, transparent);
-}
-.c-logistration a.btn-link { padding-left: 0; }
-
-/* ----- Tabs / active states (Paragon/Bootstrap) ----------------------- */
-.c-logistration .tab.active,
-.c-logistration .nav-link.active,
-.c-logistration .nav-tabs .nav-link.active {
-  border-color: var(--brand-accent) !important;
-  color: var(--brand-accent) !important;
+  z-index: 4;
 }
 
-/* ----- Buttons: override Paragon magenta just inside this card -------- */
-.c-logistration .btn-brand,
-.c-logistration .btn-primary {
-  background: var(--brand-accent) !important;
-  border-color: var(--brand-accent) !important;
-  color: #fff !important;
-}
-.c-logistration .btn-brand:hover,
-.c-logistration .btn-primary:hover { filter: brightness(1.06); }
-
-.btn-pill { border-radius: 999px !important; padding: 12px 18px; font-weight: 700; }
-.btn-outline-light { border: 2px solid rgba(255,255,255,.9); color: #fff; }
-.btn-outline-light:hover { background: rgba(255,255,255,.16); color: #fff; }
-
-/* ----- Mobile (stack but keep the blue visible) ----------------------- */
+/* Responsive */
 @media (max-width: 980px) {
-  .c-logistration {
-    grid-template-columns: 1fr;
-    grid-template-rows: 220px auto;
-    margin: 16px auto;
-    border-radius: 14px;
-  }
-  .c-logistration__left  { padding: 24px; }
-  .c-logistration__right { padding: 24px; }
-  .c-logistration__right::before { display: none; } /* slant not needed on mobile */
-  .c-logistration .hero h1 { font-size: 34px; }
+  .c-card__inner { grid-template-columns: 1fr; }
 }
