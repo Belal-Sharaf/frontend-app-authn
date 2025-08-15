@@ -2,7 +2,7 @@
 .page-safe-area { padding: clamp(12px, 2vw, 24px); }
 
 .c-card-only {
-  min-height: calc(100vh - 72px);   /* leave room for header */
+  min-height: calc(100vh - 72px);
   display: grid;
   place-items: center;
   background:
@@ -22,7 +22,6 @@
 }
 
 .c-card__inner {
-  position: relative;
   display: grid;
   grid-template-columns: clamp(280px, 32vw, 380px) 1fr;
   gap: clamp(18px, 3vw, 32px);
@@ -69,13 +68,8 @@
   border-color: #0b72e7 !important;
 }
 
-/* Keep "Forgot password" readable & aligned */
-#forgot-password {
-  display: inline-block;
-  margin-left: 10px;
-  position: relative;
-  z-index: 4;
-}
+/* Keep 'Forgot password' visible */
+#forgot-password { display:inline-block; margin-left:10px; position:relative; z-index:4; }
 
 /* Responsive */
 @media (max-width: 980px) {

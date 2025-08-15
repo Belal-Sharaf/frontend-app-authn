@@ -10,32 +10,35 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 import BaseContainer from '../base-container';
-import { clearThirdPartyAuthContextErrorMessage } from '../common-components/data/actions';
-import { tpaProvidersSelector } from '../common-components/data/selectors';
 import messages from '../common-components/messages';
 import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
 import { updatePathWithQueryParams } from '../data/utils';
+
 import { LoginPage } from '../login';
-import { backupLoginForm } from '../login/data/actions';
 import { RegistrationPage } from '../register';
+import { backupLoginForm } from '../login/data/actions';
 import { backupRegistrationForm } from '../register/data/actions';
+import { clearThirdPartyAuthContextErrorMessage } from '../common-components/data/actions';
 
-const Logistration = (props) => {
-  const { selectedPage } = props;
-  const { formatMessage } = useIntl();
+const Logistration = ({
+  selectedPage,
+  backupLoginForm,
+  backupRegistrationForm,
+  clearThirdPartyAuthContextErrorMessage,
+}) => {
   const navigate = useNavigate();
+  const { formatMessage } = useIntl();
 
-  // Always get CSRF
+  // Ensure CSRF is available
   useEffect(() => {
-    const authService = getAuthService();
-    if (authService) {
-      authService.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
+    const s = getAuthService();
+    if (s) {
+      s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
     }
   }, []);
 
-  // Mode = which form is shown inside the card
+  // Which form to show inside the card
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
-
   useEffect(() => {
     setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   }, [selectedPage]);
@@ -44,23 +47,22 @@ const Logistration = (props) => {
 
   const goLogin = () => {
     sendTrackEvent('edx.bi.login_form.toggled', { from: 'card', category: 'user-engagement' });
-    props.clearThirdPartyAuthContextErrorMessage();
-    props.backupRegistrationForm();
+    clearThirdPartyAuthContextErrorMessage();
+    backupRegistrationForm();
     setMode('login');
     navigate(updatePathWithQueryParams(LOGIN_PAGE), { replace: true });
   };
 
   const goRegister = () => {
     sendTrackEvent('edx.bi.register_form.toggled', { from: 'card', category: 'user-engagement' });
-    props.clearThirdPartyAuthContextErrorMessage();
-    props.backupLoginForm();
+    clearThirdPartyAuthContextErrorMessage();
+    backupLoginForm();
     setMode('register');
     navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
   };
 
   return (
-    // Force a plain layout (no left billboard)
-    <BaseContainer layout="default">
+    <BaseContainer>
       <section className="c-card-only page-safe-area">
         <div className="c-card">
           <div className="c-card__inner">
@@ -72,24 +74,16 @@ const Logistration = (props) => {
               </h3>
               <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
-              {/* CTAs replace the old tabs */}
+              {/* CTAs replace old tabs */}
               <div className="c-card__ctas">
                 {mode === 'login' ? (
                   !disablePublicAccountCreation && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-light btn-lg"
-                      onClick={goRegister}
-                    >
+                    <button type="button" className="btn btn-outline-light btn-lg" onClick={goRegister}>
                       {formatMessage(messages['create.account.for.free.button'])}
                     </button>
                   )
                 ) : (
-                  <button
-                    type="button"
-                    className="btn btn-outline-light btn-lg"
-                    onClick={goLogin}
-                  >
+                  <button type="button" className="btn btn-outline-light btn-lg" onClick={goLogin}>
                     {formatMessage(messages['sign.in.button'])}
                   </button>
                 )}
@@ -98,10 +92,11 @@ const Logistration = (props) => {
 
             {/* Form area (right) */}
             <main className="c-card__form">
-              {mode === 'login'
-                ? <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
-                : <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
-              }
+              {mode === 'login' ? (
+                <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+              ) : (
+                <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+              )}
             </main>
           </div>
         </div>
@@ -119,11 +114,7 @@ Logistration.propTypes = {
 
 Logistration.defaultProps = { selectedPage: LOGIN_PAGE };
 
-const mapStateToProps = (state) => ({
-  tpaProviders: tpaProvidersSelector(state),
-});
-
-export default connect(mapStateToProps, {
+export default connect(null, {
   backupLoginForm,
   backupRegistrationForm,
   clearThirdPartyAuthContextErrorMessage,
