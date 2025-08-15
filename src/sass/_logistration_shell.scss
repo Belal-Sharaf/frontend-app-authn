@@ -1,149 +1,172 @@
-/* src/sass/_logistration.scss */
+/* ==========================================================================
+   Logistration layout + theming (Cogens)
+   ========================================================================== */
 
 /* Brand palette */
 :root {
-  --brand-blue-1: #165dde;
-  --brand-blue-2: #1faef4;
-  --brand-surface: #ffffff;
-  --brand-ink: #0b1220;
+  --brand-1: #1d3a70;   /* deep blue */
+  --brand-2: #2a68c5;   /* gradient mate */
+  --accent:  #4ad0ff;   /* light cyan for accent text */
 }
 
-/* Page shell */
+/* Subtle background behind the card */
+body {
+  background:
+    radial-gradient(80rem 80rem at -10% 120%, rgba(29,58,112,0.06), transparent 60%),
+    radial-gradient(80rem 80rem at 110% -20%, rgba(42,104,197,0.06), transparent 60%);
+}
+
+/* Shell centers the card */
 .c-shell {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 4rem 1.25rem;
-  background:
-    radial-gradient(80rem 80rem at -10% 120%, rgba(22,93,222,0.08), transparent 60%),
-    radial-gradient(80rem 80rem at 110% -20%, rgba(31,174,244,0.08), transparent 60%);
+  padding: 32px;
 }
 
-/* Card */
+/* Card container */
 .c-card {
-  width: min(1120px, 100%);
-  background: var(--brand-surface);
-  border-radius: 18px;
-  box-shadow: 0 20px 70px rgba(10,30,65,.15), 0 6px 20px rgba(10,30,65,.08);
+  width: min(1100px, 96vw);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(16, 24, 40, 0.10);
 }
+
+/* Inner grid: hero (left) + form (right) */
 .c-card__inner {
   display: grid;
-  gap: 0;
-  grid-template-columns: 430px 1fr;  /* left hero / right form */
+  grid-template-columns: 1fr 1.2fr;
 }
 
 /* Blue hero panel */
 .c-card__hero {
-  position: relative;
-  padding: 32px 32px 36px 36px;
+  padding: 40px 32px 48px;
   color: #fff;
-  border-radius: 18px 0 0 18px;
-  overflow: hidden;
-  background: linear-gradient(165deg, var(--brand-blue-1), var(--brand-blue-2));
-}
-.c-card__hero::after {
-  content: "";
-  position: absolute;
-  right: -80px;
-  top: -10%;
-  width: 160px;
-  height: 140%;
-  transform: rotate(10deg);
-  background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0));
-  filter: blur(2px);
-  opacity: .35;
+  background: linear-gradient(180deg, var(--brand-1) 0%, var(--brand-2) 100%);
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
 }
 
-/* Logo inside white rounded square */
-.c-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
+/* Form side */
+.c-card__form {
+  padding: 40px 48px 48px;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  background: #fff;
 }
-.c-brand__box {
+
+/* Title + subtitle */
+.c-card__title {
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 800;
+  margin: 16px 0 12px;
+}
+.c-card__title .accent { color: var(--accent); font-weight: 800; }
+
+.c-card__subtitle {
+  opacity: 0.92;
+  margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   Brand mark (white square with small logo)
+   ========================================================================== */
+
+.c-brand {
+  position: relative;
   width: 40px;
   height: 40px;
-  display: inline-block;
+  margin-bottom: 24px;
+}
+.c-brand__box {
+  position: absolute;
+  inset: 0;
   border-radius: 10px;
   background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
 }
 .c-brand__logo {
-  /* This targets the <img> so huge images are tamed */
-  position: relative;
-  width: 24px;
-  height: 24px;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
-  margin-left: -32px; /* visually center the logo inside the white box */
+  display: block;
 }
 
-/* Hero text */
-.c-card__title {
-  font-size: 42px;
-  line-height: 1.06;
-  font-weight: 800;
-  margin: 4px 0 12px;
-}
-.c-card__title .accent {
-  color: #a9e6ff; /* cyan tint */
-  font-weight: 800;
-}
-.c-card__subtitle {
-  margin: 0 0 18px;
-  opacity: .9;
-}
+/* ==========================================================================
+   Kill legacy header/tabs + stray hero CTA injected by themes
+   ========================================================================== */
 
-/* CTA in hero */
-.c-card__ctas .btn {
-  padding: 10px 18px;
-  border-radius: 12px;
-  font-weight: 600;
-  border: 2px solid rgba(255,255,255,.85);
-  color: #fff;
-  background: transparent;
-}
-.c-card__ctas .btn:hover { background: rgba(255,255,255,.12); }
-
-/* Form area */
-.c-card__form {
-  padding: 36px 36px 40px;
-  border-radius: 0 18px 18px 0;
-  background: var(--brand-surface);
-}
-
-/* Hide any leftover top tabs/headers Paragon may render */
-.c-card__form .nav,
-.c-card__form .nav-tabs,
-.c-card__form header,
-.c-card__form .c-card__formHeader {
+/* Old tabs/header above the form */
+.c-card__form > header,
+.c-card__formHeader,
+.pgn__tabs {
   display: none !important;
 }
 
-/* Make primary buttons blue everywhere (login & register) */
-#sign-in.btn-brand,
-.register-button.btn-brand,
-.c-card__form .btn-brand,
-.c-card__form button[type="submit"] {
-  background: linear-gradient(90deg, var(--brand-blue-1), var(--brand-blue-2)) !important;
+/* Any theme-injected hero CTA area (and its button) */
+.c-card__hero .hero,
+.c-card__hero .hero .btn,
+.c-logistration__left .hero,
+.c-logistration__left .hero .btn {
+  display: none !important;
+}
+
+/* Some older themes inject an extra brand image container—hide it */
+.c-logistration__brand,
+.c-logistration__brand img {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Primary buttons (Sign in / Create account) -> blue gradient
+   ========================================================================== */
+
+/* Paragon stateful button using variant="brand" */
+.pgn__stateful-btn.variant-brand,
+.pgn__stateful-btn.btn-brand,
+.btn-brand {
+  background: linear-gradient(90deg, var(--brand-1) 0%, var(--brand-2) 100%) !important;
   border-color: transparent !important;
   color: #fff !important;
 }
-#sign-in.btn-brand:hover,
-.register-button.btn-brand:hover,
-.c-card__form .btn-brand:hover,
-.c-card__form button[type="submit"]:hover {
+.pgn__stateful-btn.variant-brand:hover,
+.pgn__stateful-btn.btn-brand:hover,
+.btn-brand:hover {
   filter: brightness(1.05);
 }
 
-/* Inputs look a bit airier on this card */
-.c-card__form .form-control {
-  border-radius: 12px;
+/* If anything falls back to .btn-primary, make it brandy too */
+.btn-primary {
+  background: linear-gradient(90deg, var(--brand-1) 0%, var(--brand-2) 100%) !important;
+  border-color: transparent !important;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .c-card__inner { grid-template-columns: 1fr; }
-  .c-card__hero { border-radius: 18px 18px 0 0; }
-  .c-card__form { border-radius: 0 0 18px 18px; }
+/* ==========================================================================
+   Inputs spacing
+   ========================================================================== */
+.c-card__form .pgn__form-group,
+.c-card__form .form-group {
+  margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 980px) {
+  .c-card__inner {
+    grid-template-columns: 1fr;
+  }
+  .c-card__hero {
+    border-radius: 16px 16px 0 0;
+    padding: 28px 24px 32px;
+  }
+  .c-card__form {
+    border-radius: 0 0 16px 16px;
+    padding: 24px;
+  }
+  .c-card__title { font-size: 32px; }
 }

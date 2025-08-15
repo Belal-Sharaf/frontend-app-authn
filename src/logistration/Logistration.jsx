@@ -10,9 +10,7 @@ import { sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { useIntl } from '@edx/frontend-platform/i18n';
 
 import { LoginPage } from '../login';
-import loginMessages from '../login/messages';
 import { RegistrationPage } from '../register';
-import registerMessages from '../register/messages';
 
 import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
 import { updatePathWithQueryParams } from '../data/utils';
@@ -27,7 +25,7 @@ const Logistration = ({
   backupRegistrationForm,
   clearThirdPartyAuthContextErrorMessage,
 }) => {
-  const { formatMessage } = useIntl();
+  const { formatMessage } = useIntl(); // kept in case messages are needed later
   const navigate = useNavigate();
 
   // Ensure CSRF is available
@@ -42,8 +40,7 @@ const Logistration = ({
     setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   }, [selectedPage]);
 
-  const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
-
+  // Tab replacement handlers (kept for future use if you re-enable CTA switching)
   const goLogin = () => {
     sendTrackEvent('edx.bi.login_form.toggled', { from: 'card', category: 'user-engagement' });
     clearThirdPartyAuthContextErrorMessage();
@@ -69,7 +66,7 @@ const Logistration = ({
         <div className="c-card__inner">
           {/* Blue hero panel */}
           <aside className="c-card__hero" aria-label="Welcome">
-            <div className="c-brand">
+            <div className="c-brand" aria-label="Cogens brand">
               <span className="c-brand__box" aria-hidden />
               <img className="c-brand__logo" src={logoUrl} alt="Cogens" />
             </div>
@@ -79,24 +76,12 @@ const Logistration = ({
             </h3>
             <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
-            {/* CTAs replace tabs */}
-            <div className="c-card__ctas">
-              {mode === 'login' ? (
-                !disablePublicAccountCreation && (
-                  <button type="button" className="btn btn-outline-light btn-lg" onClick={goRegister}>
-                    {formatMessage(registerMessages['create.account.for.free.button'])}
-                  </button>
-                )
-              ) : (
-                <button type="button" className="btn btn-outline-light btn-lg" onClick={goLogin}>
-                  {formatMessage(loginMessages['sign.in.button'])}
-                </button>
-              )}
-            </div>
+            {/* NOTE: hero CTAs removed on purpose */}
           </aside>
 
           {/* Form area */}
           <main className="c-card__form">
+            {/* Hide any legacy tab header via CSS; render only the chosen mode */}
             {mode === 'login' ? (
               <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
             ) : (
