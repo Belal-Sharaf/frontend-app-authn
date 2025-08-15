@@ -78,3 +78,14 @@
 .image-layout {
   display: none !important;
 }
+/* Brand logo inside the blue hero (from theming) */
+.c-card__hero img,
+.c-logistration__brand img {
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 8px;
+}
