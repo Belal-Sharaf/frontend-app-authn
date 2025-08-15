@@ -10,7 +10,9 @@ import { sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { useIntl } from '@edx/frontend-platform/i18n';
 
 import { LoginPage } from '../login';
+import loginMessages from '../login/messages';
 import { RegistrationPage } from '../register';
+import registerMessages from '../register/messages';
 
 import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
 import { updatePathWithQueryParams } from '../data/utils';
@@ -25,10 +27,10 @@ const Logistration = ({
   backupRegistrationForm,
   clearThirdPartyAuthContextErrorMessage,
 }) => {
-  const { formatMessage } = useIntl(); // kept in case messages are needed later
+  const { formatMessage } = useIntl();
   const navigate = useNavigate();
 
-  // Ensure CSRF is available
+  // Ensure CSRF token exists
   useEffect(() => {
     const s = getAuthService();
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
@@ -40,9 +42,11 @@ const Logistration = ({
     setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   }, [selectedPage]);
 
-  // Tab replacement handlers (kept for future use if you re-enable CTA switching)
+  const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
+  const canRegister = !disablePublicAccountCreation;
+
   const goLogin = () => {
-    sendTrackEvent('edx.bi.login_form.toggled', { from: 'card', category: 'user-engagement' });
+    sendTrackEvent('edx.bi.login_form.toggled', { from: 'hero', category: 'user-engagement' });
     clearThirdPartyAuthContextErrorMessage();
     backupRegistrationForm();
     setMode('login');
@@ -50,42 +54,61 @@ const Logistration = ({
   };
 
   const goRegister = () => {
-    sendTrackEvent('edx.bi.register_form.toggled', { from: 'card', category: 'user-engagement' });
+    sendTrackEvent('edx.bi.register_form.toggled', { from: 'hero', category: 'user-engagement' });
     clearThirdPartyAuthContextErrorMessage();
     backupLoginForm();
     setMode('register');
     navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
   };
 
-  // Use theming pipeline so Tutor serves the hashed file automatically
-  const logoUrl = `${getConfig().LMS_BASE_URL}/theming/assets/images/logo.png`;
-
   return (
     <div className="c-shell">
       <div className="c-card">
         <div className="c-card__inner">
-          {/* Blue hero panel */}
+          {/* LEFT: blue hero panel (no logo square) */}
           <aside className="c-card__hero" aria-label="Welcome">
-            <div className="c-brand" aria-label="Cogens brand">
-              <span className="c-brand__box" aria-hidden />
-              <img className="c-brand__logo" src={logoUrl} alt="Cogens" />
-            </div>
-
             <h3 className="c-card__title">
-              Start<br />learning<br /><span className="accent">with Cogens</span>
+              {mode === 'login' ? (
+                <>Welcome<br />Back!</>
+              ) : (
+                <>Start<br />learning<br /><span className="accent">with Cogens</span></>
+              )}
             </h3>
-            <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
-            {/* NOTE: hero CTAs removed on purpose */}
+            <p className="c-card__subtitle">
+              High-quality courses, taught by experts.
+            </p>
+
+            {/* Switch buttons (replace the old top tabs) */}
+            <div className="c-card__ctas">
+              {mode === 'login' ? (
+                canRegister && (
+                  <button
+                    type="button"
+                    className="c-cta c-cta--light"
+                    onClick={goRegister}
+                  >
+                    {formatMessage(registerMessages['create.account.for.free.button'])}
+                  </button>
+                )
+              ) : (
+                <button
+                  type="button"
+                  className="c-cta c-cta--light"
+                  onClick={goLogin}
+                >
+                  {formatMessage(loginMessages['sign.in.button'])}
+                </button>
+              )}
+            </div>
           </aside>
 
-          {/* Form area */}
+          {/* RIGHT: form (we hide any built-in header via CSS) */}
           <main className="c-card__form">
-            {/* Hide any legacy tab header via CSS; render only the chosen mode */}
             {mode === 'login' ? (
-              <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+              <LoginPage institutionLogin={false} handleInstitutionLogin={() => { }} />
             ) : (
-              <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+              <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => { }} />
             )}
           </main>
         </div>
@@ -101,7 +124,9 @@ Logistration.propTypes = {
   clearThirdPartyAuthContextErrorMessage: PropTypes.func.isRequired,
 };
 
-Logistration.defaultProps = { selectedPage: LOGIN_PAGE };
+Logistration.defaultProps = {
+  selectedPage: LOGIN_PAGE,
+};
 
 export default connect(null, {
   backupLoginForm,
