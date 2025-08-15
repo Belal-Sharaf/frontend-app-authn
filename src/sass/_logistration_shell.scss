@@ -1,91 +1,147 @@
-/* Full-height centered page shell */
+/* src/sass/_logistration_shell.scss */
+
+/* Brand-ish palette you can tweak */
+:root {
+  --brand-primary: #1554d1;     /* main blue */
+  --brand-primary-2: #2476ff;  /* lighter blue */
+  --brand-accent: #12c2ff;     /* cyan accent */
+  --card-radius: 16px;
+}
+
+/* Kill the big default brand bar if it appears */
+.c-logistration__brand { display: none !important; }
+
+/* Hide any stray small "Create account" chip above the username field */
+.c-card__form > .btn:first-child { display: none !important; }
+/* and generic chip class if present */
+.c-card__form .c-card__cta--top,
+.c-card__form .btn--cta-top { display: none !important; }
+
+/* Page wrap */
 .c-shell {
   min-height: 100vh;
   display: grid;
   place-items: center;
+  padding: 28px;
   background:
-    radial-gradient(80rem 80rem at -20% 120%, rgba(30,81,208,.06), transparent 60%),
-    radial-gradient(80rem 80rem at 110% -20%, rgba(11,114,231,.06), transparent 60%),
-    #f7f9fc;
-  padding: clamp(12px, 2vw, 24px);
+    radial-gradient(90rem 60rem at 10% -20%, rgba(21,84,209,0.10), transparent 60%),
+    radial-gradient(80rem 60rem at 110% 120%, rgba(36,118,255,0.09), transparent 60%),
+    #f5f8ff;
 }
 
-/* Card */
+/* Main card */
 .c-card {
-  width: min(1100px, 96vw);
+  width: min(1100px, 100%);
   background: #fff;
-  border-radius: 22px;
+  border-radius: var(--card-radius);
   box-shadow:
-    0 26px 72px rgba(13, 25, 58, .16),
-    0 8px 28px rgba(13, 25, 58, .10);
-  padding: clamp(16px, 2.6vw, 28px);
+    0 2px 8px rgba(16, 24, 40, 0.05),
+    0 30px 120px rgba(16, 24, 40, 0.10);
 }
+
 .c-card__inner {
   display: grid;
-  grid-template-columns: clamp(280px, 32vw, 380px) 1fr;
-  gap: clamp(18px, 3vw, 32px);
-  align-items: center;
+  grid-template-columns: 420px 1fr;
+  gap: 0;
+  overflow: hidden;
+  border-radius: var(--card-radius);
 }
 
-/* Blue hero panel */
+/* Left hero panel */
 .c-card__hero {
-  background: linear-gradient(160deg, #1e51d0, #0b72e7);
+  position: relative;
+  padding: 40px 36px 36px 36px;
   color: #fff;
-  border-radius: 18px;
-  padding: clamp(18px, 2.2vw, 28px);
-  min-height: clamp(280px, 34vw, 360px);
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-}
-.c-card__mark { width:26px; height:26px; border-radius:6px; background:#fff; opacity:.9; }
-.c-card__title { margin:6px 0 6px; font-weight:800; line-height:1.05; letter-spacing:-.01em; font-size:clamp(28px,3.2vw,44px); }
-.c-card__title .accent { color:#27d1f3; }
-.c-card__subtitle { margin:0 0 10px; opacity:.92; }
-.c-card__ctas { margin-top:auto; }
-
-/* Form zone refinements */
-.c-card__form { position:relative; z-index:3; }
-.c-card__form .mw-xs,
-.c-card__form .main-content {
-  width: 100%;
-  max-width: 620px;
-  margin: 0;
-  background: transparent;
-  padding: 0;
-  box-shadow: none;
-}
-.c-card__form .btn-brand,
-.c-card__form .btn-primary {
-  background: #1e51d0 !important;
-  border-color: #1e51d0 !important;
-}
-.c-card__form .btn-brand:hover,
-.c-card__form .btn-primary:hover {
-  background: #0b72e7 !important;
-  border-color: #0b72e7 !important;
-}
-#forgot-password { display:inline-block; margin-left:10px; position:relative; z-index:4; }
-
-/* Responsive */
-@media (max-width: 980px) {
-  .c-card__inner { grid-template-columns: 1fr; }
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.0) 100%),
+    linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-2) 85%);
 }
 
-/* ---- Kill the old BaseContainer welcome/image layouts if any CSS leaks in ---- */
-.welcome-page-layout,
-.image-layout {
-  display: none !important;
+/* White square that holds the logo */
+.mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.06),
+    0 6px 24px rgba(0,0,0,0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
 }
-/* Brand logo inside the blue hero (from theming) */
-.c-card__hero img,
-.c-logistration__brand img {
-  width: 40px !important;
-  height: 40px !important;
-  max-width: 40px !important;
-  max-height: 40px !important;
-  object-fit: contain;
+
+.mark--with-logo img {
+  max-width: 28px;
+  max-height: 28px;
   display: block;
-  margin-bottom: 8px;
+}
+
+/* Hero typography */
+.c-card__title {
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px 0;
+}
+.c-card__title .accent { color: var(--brand-accent); }
+
+.c-card__subtitle {
+  color: rgba(255,255,255,0.9);
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+/* CTA (switch between login/register) */
+.c-card__ctas { margin-top: 6px; }
+.c-card__ctas .btn {
+  --bs-btn-color: #fff;
+  --bs-btn-border-color: #ffffffa6;
+  --bs-btn-hover-color: #111;
+  --bs-btn-hover-bg: #fff;
+  --bs-btn-hover-border-color: #fff;
+  border-radius: 999px;
+  padding: 10px 18px;
+  backdrop-filter: saturate(1.2);
+}
+
+/* Right form column */
+.c-card__form {
+  padding: 36px 48px;
+}
+
+/* Make primary actions full width and rounded */
+.c-card__form .btn.btn-primary,
+.c-card__form .btn.btn-brand,
+.c-card__form button[id="sign-in"],
+.c-card__form button#register-user {
+  width: 100%;
+  border-radius: 999px;
+  height: 46px;
+}
+
+/* Inputs look a little airier */
+.c-card__form .form-control {
+  height: 46px;
+  border-radius: 10px;
+}
+
+/* Mobile / narrow screens */
+@media (max-width: 900px) {
+  .c-card__inner {
+    grid-template-columns: 1fr;
+  }
+  .c-card__hero {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .c-card__form { padding: 24px; }
+  .c-card__title { font-size: 34px; }
+  .mark { width: 40px; height: 40px; }
+  .mark--with-logo img { max-width: 24px; max-height: 24px; }
 }

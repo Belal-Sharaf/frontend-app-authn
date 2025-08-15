@@ -23,9 +23,9 @@ import { clearThirdPartyAuthContextErrorMessage } from '../common-components/dat
 
 const Logistration = ({
   selectedPage,
-  backupLoginForm,
-  backupRegistrationForm,
-  clearThirdPartyAuthContextErrorMessage,
+  backupLoginForm: backupLoginFormAction,
+  backupRegistrationForm: backupRegistrationFormAction,
+  clearThirdPartyAuthContextErrorMessage: clearTPAError,
 }) => {
   const { formatMessage } = useIntl();
   const navigate = useNavigate();
@@ -46,19 +46,24 @@ const Logistration = ({
 
   const goLogin = () => {
     sendTrackEvent('edx.bi.login_form.toggled', { from: 'card', category: 'user-engagement' });
-    clearThirdPartyAuthContextErrorMessage();
-    backupRegistrationForm();
+    clearTPAError();
+    backupRegistrationFormAction();
     setMode('login');
     navigate(updatePathWithQueryParams(LOGIN_PAGE), { replace: true });
   };
 
   const goRegister = () => {
     sendTrackEvent('edx.bi.register_form.toggled', { from: 'card', category: 'user-engagement' });
-    clearThirdPartyAuthContextErrorMessage();
-    backupLoginForm();
+    clearTPAError();
+    backupLoginFormAction();
     setMode('register');
     navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
   };
+
+  // Logo inside the white square (SVG with PNG fallback)
+  const logoSvg = `${getConfig().LMS_BASE_URL}/theming/assets/img/logo.svg`;
+  const logoPng = `${getConfig().LMS_BASE_URL}/theming/assets/img/logo.png`;
+  const [heroLogo, setHeroLogo] = useState(logoSvg);
 
   return (
     <div className="c-shell">
@@ -66,7 +71,16 @@ const Logistration = ({
         <div className="c-card__inner">
           {/* Blue hero panel */}
           <aside className="c-card__hero" aria-label="Welcome">
-            <div className="c-card__mark" aria-hidden />
+            <div className="mark mark--with-logo" aria-hidden>
+              <img
+                src={heroLogo}
+                onError={() => setHeroLogo(logoPng)}
+                alt="Cogens"
+                decoding="async"
+                fetchPriority="low"
+              />
+            </div>
+
             <h3 className="c-card__title">
               Start<br />learning<br /><span className="accent">with Cogens</span>
             </h3>
