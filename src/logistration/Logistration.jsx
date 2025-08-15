@@ -36,7 +36,7 @@ const Logistration = ({
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
-  // Initial mode derived from route
+  // Which form to show
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   useEffect(() => {
     setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');
@@ -44,7 +44,6 @@ const Logistration = ({
 
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
 
-  // Toggle helpers (hero buttons replace the old tabs)
   const goLogin = () => {
     sendTrackEvent('edx.bi.login_form.toggled', { from: 'card', category: 'user-engagement' });
     clearThirdPartyAuthContextErrorMessage();
@@ -61,9 +60,8 @@ const Logistration = ({
     navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
   };
 
-  // Themable logo from your theme (served by LMS theming endpoint)
-  const LMS = (getConfig().LMS_BASE_URL || '').replace(/\/+$/, '');
-  const logoUrl = `${LMS}/theming/asset/images/logo.png`;
+  // Use theming pipeline so Tutor serves the hashed file automatically
+  const logoUrl = `${getConfig().LMS_BASE_URL}/theming/assets/images/logo.png`;
 
   return (
     <div className="c-shell">
@@ -71,8 +69,9 @@ const Logistration = ({
         <div className="c-card__inner">
           {/* Blue hero panel */}
           <aside className="c-card__hero" aria-label="Welcome">
-            <div className="c-card__mark" aria-hidden="true">
-              <img src={logoUrl} alt="Cogens" className="c-card__logo" />
+            <div className="c-brand">
+              <span className="c-brand__box" aria-hidden />
+              <img className="c-brand__logo" src={logoUrl} alt="Cogens" />
             </div>
 
             <h3 className="c-card__title">
@@ -80,6 +79,7 @@ const Logistration = ({
             </h3>
             <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
+            {/* CTAs replace tabs */}
             <div className="c-card__ctas">
               {mode === 'login' ? (
                 !disablePublicAccountCreation && (
@@ -95,14 +95,8 @@ const Logistration = ({
             </div>
           </aside>
 
-          {/* Right side form area */}
+          {/* Form area */}
           <main className="c-card__form">
-            <header className="c-card__formHead">
-              <h1>Start learning<br />with Cogens</h1>
-              <p>High-quality courses, taught by experts.</p>
-            </header>
-
-            {/* No more faux button above inputs – it is removed */}
             {mode === 'login' ? (
               <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
             ) : (
