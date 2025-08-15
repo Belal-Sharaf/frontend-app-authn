@@ -230,7 +230,6 @@ const RegistrationPage = (props) => {
             <aside className="c-logistration__left">
               {getConfig().LOGO_URL && (
                 <div className="c-logistration__brand">
-                  <img src={getConfig().LOGO_URL} alt={platformName} />
                 </div>
               )}
               <div className="hero">

@@ -1,147 +1,137 @@
 /* src/sass/logistration.scss */
-
-/* --- Brand palette (tweak freely) --- */
-:root {
-  --brand-primary: #1552d6;      /* deep blue */
-  --brand-primary-2: #2486f5;    /* lighter blue */
-  --brand-accent: #12c2f0;       /* cyan accent for text */
-  --brand-teal: #27c2a3;         /* only if you want a teal version later */
-  --card-shadow: 0 20px 60px rgba(16, 24, 40, 0.12);
+:root{
+  --brand-primary:#1263d7;
+  --brand-primary-2:#20a0ff;
+  --card-radius:18px;
+  --shadow-lg:0 20px 50px rgba(16,24,40,.08);
 }
 
-/* Page wrapper */
-.c-shell {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:#111827;
   background:
-    radial-gradient(80rem 60rem at 10% -20%, rgba(21, 82, 214, 0.08), transparent 60%),
-    radial-gradient(60rem 40rem at 110% 10%, rgba(36, 134, 245, 0.06), transparent 60%),
-    #f6f8fc;
-  padding: clamp(16px, 2vw, 32px);
+    radial-gradient(60rem 60rem at 15% -10%, rgba(32,160,255,.10), transparent 60%),
+    radial-gradient(70rem 70rem at 120% 110%, rgba(18,99,215,.10), transparent 60%),
+    #f7fbff;
 }
 
-/* Card */
-.c-card {
-  width: min(1180px, 95vw);
-  border-radius: 22px;
-  background: #fff;
-  box-shadow: var(--card-shadow);
-  overflow: hidden;
-
-  &__inner {
-    display: grid;
-    grid-template-columns: 44% 56%;
-    align-items: stretch;
-  }
+/* center the auth card */
+.c-shell{
+  min-height:100%;
+  display:grid;
+  place-items:center;
+  padding:clamp(16px,4vw,48px);
 }
 
-/* Left hero */
-.c-card__hero {
-  position: relative;
-  padding: clamp(28px, 4vw, 48px);
-  color: #fff;
-  background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-2) 100%);
+/* ---- Layout for the existing Login/Registration markup (.c-logistration ...) ---- */
 
-  /* angled white cut like the reference */
-  &::after {
-    content: "";
-    position: absolute;
-    right: -110px;
-    top: 0;
-    height: 100%;
-    width: 220px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.08));
-    transform: skewX(-16deg);
-    filter: blur(0.2px);
-    pointer-events: none;
-  }
-
-  .c-card__title {
-    font-weight: 800;
-    line-height: .98;
-    letter-spacing: -0.5px;
-    font-size: clamp(28px, 4.4vw, 46px);
-    margin: 4px 0 16px;
-
-    .accent { color: var(--brand-accent); }
-  }
-
-  .c-card__subtitle {
-    margin: 2px 0 28px;
-    opacity: .92;
-    font-size: clamp(14px, 1.4vw, 16px);
-  }
-
-  .c-card__ctas {
-    margin-top: 8px;
-  }
+.c-logistration{
+  width:min(1120px,96vw);
+  margin:auto;
+  background:#fff;
+  border-radius:var(--card-radius);
+  box-shadow:var(--shadow-lg);
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:44% 56%;
 }
 
-/* Hero switch buttons */
-.c-cta {
-  appearance: none;
-  border: 2px solid rgba(255,255,255,0.75);
-  color: #fff;
-  background: transparent;
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-weight: 600;
-  line-height: 1;
-  cursor: pointer;
-  transition: transform .12s ease, background .12s ease, border-color .12s ease;
-
-  &:hover {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.9);
-    transform: translateY(-1px);
-  }
-
-  &:active { transform: translateY(0); }
+@media (max-width:900px){
+  .c-logistration{grid-template-columns:1fr}
 }
 
-/* Right form column */
-.c-card__form {
-  padding: clamp(24px, 4vw, 48px);
+/* LEFT hero */
+.c-logistration__left{
+  padding:clamp(24px,5vw,40px);
+  background:linear-gradient(135deg,var(--brand-primary) 0%,var(--brand-primary-2) 100%);
+  color:#fff;
+  position:relative;
 }
 
-/* Hide the framework’s old tab/header row completely */
-.c-card__formHead,
-.c-card__form head,
-.c-card__form header {
-  display: none !important;
+/* soft shine */
+.c-logistration__left::after{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.18) 32%, rgba(255,255,255,0) 34%),
+    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,0));
+  pointer-events:none;
 }
 
-/* Make Paragon “brand” submit buttons blue here (instead of magenta) */
-.c-card__form .btn-brand,
-.c-card__form .pgn__stateful-btn.btn-brand,
-.c-card__form button[type="submit"].btn-brand {
-  background: linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-2) 100%) !important;
-  border-color: transparent !important;
-  color: #fff !important;
+@media (max-width:900px){ .c-logistration__left::after{display:none} }
+
+/* small logo square was here — kill it hard just in case */
+.c-logistration__brand,
+.c-logistration__brand img{ display:none !important; }
+
+/* hero text */
+.c-logistration__left .hero h1{
+  margin:0 0 10px;
+  line-height:1.06;
+  font-weight:800;
+  font-size:clamp(28px,4.2vw,42px);
+  letter-spacing:-.02em;
+}
+.c-logistration__left .hero .hl{ color:#bfe6ff; }
+.c-logistration__left .hero p{ margin:0 0 24px; opacity:.95; }
+
+/* left CTA (switch form) */
+.c-logistration__left .btn.btn-outline-light.btn-pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:12px 18px;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,.85);
+  color:#fff; background:transparent;
+  font-weight:600;
+  transition:transform .06s ease, background .2s ease, border-color .2s ease;
+}
+.c-logistration__left .btn.btn-outline-light.btn-pill:hover{
+  transform:translateY(-1px); border-color:#fff; background:rgba(255,255,255,.1);
 }
 
-.c-card__form .btn-brand:hover,
-.c-card__form .pgn__stateful-btn.btn-brand:hover {
-  filter: brightness(1.04);
+/* RIGHT form area */
+.c-logistration__right{ padding:clamp(20px,5vw,40px); }
+
+/* Inputs a bit rounder for nicer look */
+.c-logistration__right .pgn__form-control,
+.c-logistration__right .form-control{
+  border-radius:12px;
+  height:48px;
 }
 
-.c-card__form .btn-brand:active {
-  filter: brightness(.98);
+/* Force submit buttons to blue gradient (no magenta) */
+.c-logistration__right .btn-brand,
+.c-logistration__right .pgn__button--brand,
+.c-logistration__right button[type="submit"],
+.c-logistration__right .btn-primary{
+  background-image:linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-2) 100%) !important;
+  background-color:var(--brand-primary) !important;
+  color:#fff !important;
+  border:none !important;
+  box-shadow:0 6px 16px rgba(18,99,215,.25);
+}
+.c-logistration__right .btn-brand:hover,
+.c-logistration__right .pgn__button--brand:hover,
+.c-logistration__right button[type="submit"]:hover,
+.c-logistration__right .btn-primary:hover{
+  filter:brightness(1.03);
 }
 
-/* Inputs look a bit tighter on this card */
-.c-card__form .form-control,
-.c-card__form input,
-.c-card__form .pgn__form-control {
-  height: 44px;
-  border-radius: 10px;
+/* Tidy “Forgot password” link spacing */
+.c-logistration__right a[href*="password"]{ display:inline-block; margin-top:10px; }
+
+/* Reduce extra whitespace on very tall screens */
+@media (min-height:900px){
+  .c-shell{ padding-block:32px; }
 }
 
-/* Responsiveness */
-@media (max-width: 960px) {
-  .c-card__inner {
-    grid-template-columns: 1fr;
-  }
-  .c-card__hero::after { display: none; }
-}
+/* ---- (If you also kept an outer .auth-card wrapper from earlier work, this keeps it pretty) ---- */
+.auth-card{ width:min(1120px,96vw); border-radius:var(--card-radius); background:#fff; box-shadow:var(--shadow-lg); overflow:hidden; }
+.auth-card__inner{ display:grid; grid-template-columns:44% 56%; }
+@media (max-width:900px){ .auth-card__inner{ grid-template-columns:1fr; } }
+.auth-card__left{ padding:clamp(24px,5vw,40px); background:linear-gradient(135deg,var(--brand-primary) 0%,var(--brand-primary-2) 100%); color:#fff; }
+.auth-card__right{ padding:clamp(20px,5vw,40px); }
