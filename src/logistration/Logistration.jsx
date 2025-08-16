@@ -62,19 +62,18 @@ const Logistration = ({
     <div className="c-shell">
       <div className="c-card">
         <div className="c-card__inner">
-          {/* LEFT: gradient hero with a single CTA to switch screens */}
+          {/* LEFT — gradient hero + single CTA */}
           <aside className="c-card__hero" aria-label="Welcome">
             <h3 className="c-card__title">
               Start<br />learning<br /><span className="accent">with Cogens</span>
             </h3>
             <p className="c-card__subtitle">High-quality courses, taught by experts.</p>
 
-            {/* keep only ONE CTA here; no extra top button */}
             <div className="c-card__cta">
               {mode === 'login' ? (
                 !disablePublicAccountCreation && (
                   <Link
-                    to={REGISTER_PAGE}                // IMPORTANT: no /authn prefix
+                    to={REGISTER_PAGE}
                     onClick={goRegister}
                     className="btn btn-outline-light btn-pill"
                   >
@@ -93,16 +92,11 @@ const Logistration = ({
             </div>
           </aside>
 
-          {/* RIGHT: form */}
+          {/* RIGHT — form only */}
           <main className="c-card__form">
-            <header className="c-form__header">
-              <h1>Start learning<br />with Cogens</h1>
-              <p>High-quality courses, taught by experts.</p>
-            </header>
-
             {mode === 'login'
-              ? <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
-              : <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
+              ? <LoginPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
+              : <RegistrationPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
             }
           </main>
         </div>

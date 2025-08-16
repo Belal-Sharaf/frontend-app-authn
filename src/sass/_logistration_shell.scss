@@ -1,105 +1,92 @@
-/* src/sass/logistration.scss */
+/* src/logistration/logistration.scss */
 
-/* container */
+/* Layout shell */
 .c-shell {
   display: grid;
   place-items: center;
   min-height: 100vh;
-  padding: 4rem 1.25rem;
-  background: radial-gradient(1200px 800px at 50% -200px, #eef5ff 0%, #f5f8ff 40%, #f7f9fe 60%, #ffffff 100%);
+  padding: 3rem 1rem;
+  background: radial-gradient(1200px 600px at 70% 20%, rgba(0, 102, 255, 0.08), transparent 60%);
 }
 
-/* main card */
 .c-card {
-  width: 100%;
-  max-width: 1120px;
+  width: min(1100px, 95vw);
+  border-radius: 20px;
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 30px 80px rgba(14, 34, 66, 0.08);
+  box-shadow:
+    0 20px 45px rgba(16, 24, 40, 0.10),
+    0 2px 6px rgba(16, 24, 40, 0.04);
   overflow: hidden;
-
-  &__inner {
-    display: grid;
-    grid-template-columns: 44% 56%;
-  }
 }
 
-/* left hero */
+.c-card__inner {
+  display: grid;
+  grid-template-columns: 44% 56%;
+  gap: 0;
+  position: relative;
+}
+
+/* LEFT PANEL (hero) */
 .c-card__hero {
   position: relative;
-  padding: 40px 36px;
+  z-index: 1;
+  padding: 2.5rem 2rem 2.75rem;
+  background: linear-gradient(180deg, #0E47F1 0%, #177DFF 100%);
   color: #fff;
-  background: linear-gradient(180deg, #0e4bd8 0%, #1673ff 100%);
-
-  .c-card__title {
-    font-size: 44px;
-    line-height: 1.05;
-    margin: 14px 0 8px;
-    font-weight: 800;
-
-    .accent { color: #65d3ff; font-weight: 800; }
-  }
-
-  .c-card__subtitle {
-    opacity: .95;
-    margin: 0 0 24px;
-    font-size: 16px;
-  }
-
-  .c-card__cta {
-    margin-top: 8px;
-
-    .btn {
-      padding: 12px 18px;
-      font-weight: 600;
-      border: 2px solid rgba(255,255,255,.9) !important;
-      color: #fff !important;
-      background: transparent !important;
-    }
-  }
+  overflow: hidden; /* prevents CTA bleeding into the right column */
 }
 
-/* right side */
+.c-card__title {
+  margin: 0 0 0.75rem;
+  font-weight: 800;
+  font-size: clamp(28px, 3.2vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.c-card__title .accent {
+  color: #6BCEFF;
+}
+
+.c-card__subtitle {
+  margin: 0 0 1.5rem;
+  opacity: 0.9;
+}
+
+.c-card__cta {
+  margin-top: 1rem;
+}
+
+.c-card__cta .btn {
+  padding: 12px 18px;
+  border-radius: 999px;
+  border-color: rgba(255,255,255,0.9);
+  color: #fff;
+  background: transparent;
+}
+
+/* RIGHT PANEL (form) */
 .c-card__form {
-  padding: 40px 36px;
-
-  .c-form__header {
-    margin-bottom: 16px;
-
-    h1 {
-      font-size: 32px;
-      line-height: 1.1;
-      margin: 0 0 6px;
-      font-weight: 800;
-      color: #0e1b2a;
-    }
-    p {
-      margin: 0 0 16px;
-      color: #58657a;
-      font-size: 15px;
-    }
-  }
+  position: relative;
+  z-index: 2;        /* ensures the form sits above the left panel */
+  padding: 2.5rem 2rem 2.75rem;
+  background: #fff;
 }
 
-/* hide the old extra CTA block entirely if it renders for any reason */
-.c-card__ctas,
-.c-card__hero .c-cta,
-.c-card__hero .c-cta--light {
+/* If anything (like a stray CTA) is injected at the very top of the form column, hide it */
+.c-card__form > .btn,
+.c-card__form > .c-cta,
+.c-card__form > .c-cta--light {
   display: none !important;
 }
 
-/* form tweaks */
-.c-card__form .btn[type="submit"],
-.c-card__form button[type="submit"] {
-  border-radius: 999px;
-  background: linear-gradient(90deg, #0e4bd8, #1d76ff) !important;
-  border: none;
-}
-
-/* responsive */
+/* Responsive */
 @media (max-width: 980px) {
-  .c-card__inner { grid-template-columns: 1fr; }
-  .c-card__hero { padding: 28px 24px; }
-  .c-card__form { padding: 28px 24px; }
-  .c-card__form .c-form__header { text-align: left; }
+  .c-card__inner {
+    grid-template-columns: 1fr;
+  }
+  .c-card__hero {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 }

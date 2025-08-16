@@ -1,7 +1,7 @@
 // src/login/LoginPage.jsx
 import { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
-import { REGISTER_PAGE } from '../data/constants'; // ← only what we use
+import { REGISTER_PAGE } from '../data/constants';
 
 import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
@@ -44,6 +44,7 @@ import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
 
 const LoginPage = (props) => {
   const {
+    withinShell,           // <-- NEW
     backedUpFormData,
     loginErrorCode,
     loginErrorContext,
@@ -77,7 +78,6 @@ const LoginPage = (props) => {
     getTPADataFromBackend(payload);
   }, [getTPADataFromBackend, queryParams, tpaHint]);
 
-  // backup form
   useEffect(() => {
     if (shouldBackupState) {
       backupFormState({ formFields: { ...formFields }, errors: { ...errors } });
@@ -148,6 +148,68 @@ const LoginPage = (props) => {
     );
   }
 
+  // ---- shared form body (no hero, no CTA) ----
+  const FormOnly = (
+    <div className="c-logistration__form">
+      <LoginFailureMessage errorCode={errorCode.type} errorCount={errorCode.count} context={errorCode.context} />
+      <ThirdPartyAuthAlert currentProvider={currentProvider} platformName={platformName} />
+      <AccountActivationMessage messageType={activationMsgType} />
+      {showResetPasswordSuccessBanner && <ResetPasswordSuccess />}
+
+      <Form id="sign-in-form" name="sign-in-form">
+        <FormGroup
+          name="emailOrUsername"
+          value={formFields.emailOrUsername}
+          autoComplete="on"
+          handleChange={handleOnChange}
+          handleFocus={handleOnFocus}
+          errorMessage={errors.emailOrUsername}
+          floatingLabel={formatMessage(messages['login.user.identity.label'])}
+        />
+        <PasswordField
+          name="password"
+          value={formFields.password}
+          autoComplete="off"
+          showScreenReaderText={false}
+          showRequirements={false}
+          handleChange={handleOnChange}
+          handleFocus={handleOnFocus}
+          errorMessage={errors.password}
+          floatingLabel={formatMessage(messages['login.password.label'])}
+        />
+        <StatefulButton
+          name="sign-in"
+          id="sign-in"
+          type="submit"
+          variant="brand"
+          className="w-100 btn-pill"
+          state={submitState}
+          labels={{ default: formatMessage(messages['sign.in.button']), pending: '' }}
+          onClick={handleSubmit}
+          onMouseDown={(event) => event.preventDefault()}
+        />
+        <Link
+          id="forgot-password"
+          name="forgot-password"
+          className="btn btn-link font-weight-500 text-body"
+          to={updatePathWithQueryParams(RESET_PAGE)}
+          onClick={trackForgotPasswordLinkClick}
+        >
+          {formatMessage(messages['forgot.password'])}
+        </Link>
+
+        <ThirdPartyAuth
+          currentProvider={currentProvider}
+          providers={providers}
+          secondaryProviders={secondaryProviders}
+          handleInstitutionLogin={handleInstitutionLogin}
+          thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
+          isLoginPage
+        />
+      </Form>
+    </div>
+  );
+
   return (
     <>
       <Helmet>
@@ -155,85 +217,28 @@ const LoginPage = (props) => {
       </Helmet>
       <RedirectLogistration success={loginResult.success} redirectUrl={loginResult.redirectUrl} finishAuthUrl={finishAuthUrl} />
 
-      {/* ===== Blue two-panel card ===== */}
-      <div className="c-logistration">
-        {/* LEFT — hero + CTA to register */}
-        <aside className="c-logistration__left">
-          {/* (brand removed to avoid spacing / huge logo issues) */}
-          <div className="hero">
-            <h1>
-              Start learning <br />
-              <span className="hl">with {getConfig().SITE_NAME}</span>
-            </h1>
-            <p>High-quality courses, taught by experts.</p>
-          </div>
+      {withinShell ? (
+        // ✅ Shell provides the left hero; show form only here
+        FormOnly
+      ) : (
+        // Standalone two-panel layout (kept for direct routing without shell)
+        <div className="c-logistration">
+          <aside className="c-logistration__left">
+            <div className="hero">
+              <h1>
+                Start learning <br />
+                <span className="hl">with {getConfig().SITE_NAME}</span>
+              </h1>
+              <p>High-quality courses, taught by experts.</p>
+            </div>
+            <Link to={REGISTER_PAGE} className="btn btn-outline-light btn-pill">Create account</Link>
+          </aside>
 
-          {/* Single CTA to switch to registration — uses route constant, not a hardcoded /authn path */}
-          <Link to={REGISTER_PAGE} className="btn btn-outline-light btn-pill">Create account</Link>
-        </aside>
-
-        {/* RIGHT — login form */}
-        <main className="c-logistration__right">
-          <div className="c-logistration__form">
-            <LoginFailureMessage errorCode={errorCode.type} errorCount={errorCode.count} context={errorCode.context} />
-            <ThirdPartyAuthAlert currentProvider={currentProvider} platformName={platformName} />
-            <AccountActivationMessage messageType={activationMsgType} />
-            {showResetPasswordSuccessBanner && <ResetPasswordSuccess />}
-
-            <Form id="sign-in-form" name="sign-in-form">
-              <FormGroup
-                name="emailOrUsername"
-                value={formFields.emailOrUsername}
-                autoComplete="on"
-                handleChange={handleOnChange}
-                handleFocus={handleOnFocus}
-                errorMessage={errors.emailOrUsername}
-                floatingLabel={formatMessage(messages['login.user.identity.label'])}
-              />
-              <PasswordField
-                name="password"
-                value={formFields.password}
-                autoComplete="off"
-                showScreenReaderText={false}
-                showRequirements={false}
-                handleChange={handleOnChange}
-                handleFocus={handleOnFocus}
-                errorMessage={errors.password}
-                floatingLabel={formatMessage(messages['login.password.label'])}
-              />
-              <StatefulButton
-                name="sign-in"
-                id="sign-in"
-                type="submit"
-                variant="brand"
-                className="w-100 btn-pill"
-                state={submitState}
-                labels={{ default: formatMessage(messages['sign.in.button']), pending: '' }}
-                onClick={handleSubmit}
-                onMouseDown={(event) => event.preventDefault()}
-              />
-              <Link
-                id="forgot-password"
-                name="forgot-password"
-                className="btn btn-link font-weight-500 text-body"
-                to={updatePathWithQueryParams(RESET_PAGE)}
-                onClick={trackForgotPasswordLinkClick}
-              >
-                {formatMessage(messages['forgot.password'])}
-              </Link>
-
-              <ThirdPartyAuth
-                currentProvider={currentProvider}
-                providers={providers}
-                secondaryProviders={secondaryProviders}
-                handleInstitutionLogin={handleInstitutionLogin}
-                thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
-                isLoginPage
-              />
-            </Form>
-          </div>
-        </main>
-      </div>
+          <main className="c-logistration__right">
+            {FormOnly}
+          </main>
+        </div>
+      )}
     </>
   );
 };
@@ -254,6 +259,7 @@ const mapStateToProps = state => {
 };
 
 LoginPage.propTypes = {
+  withinShell: PropTypes.bool,   // <-- NEW
   backedUpFormData: PropTypes.shape({ formFields: PropTypes.shape({}), errors: PropTypes.shape({}) }),
   loginErrorCode: PropTypes.string,
   loginErrorContext: PropTypes.shape({ email: PropTypes.string, redirectUrl: PropTypes.string, context: PropTypes.shape({}) }),
@@ -271,7 +277,6 @@ LoginPage.propTypes = {
     secondaryProviders: PropTypes.arrayOf(PropTypes.shape({})),
     finishAuthUrl: PropTypes.string,
   }),
-  // Actions
   backupFormState: PropTypes.func.isRequired,
   dismissPasswordResetBanner: PropTypes.func.isRequired,
   loginRequest: PropTypes.func.isRequired,
@@ -280,6 +285,7 @@ LoginPage.propTypes = {
 };
 
 LoginPage.defaultProps = {
+  withinShell: false,           // <-- NEW
   backedUpFormData: { formFields: { emailOrUsername: '', password: '' }, errors: { emailOrUsername: '', password: '' } },
   loginErrorCode: null,
   loginErrorContext: {},
