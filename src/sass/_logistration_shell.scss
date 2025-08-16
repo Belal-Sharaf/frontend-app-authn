@@ -1,90 +1,137 @@
-/* src/logistration/logistration.scss */
+/* ---------- Theme tokens (tweak freely) ---------- */
+:root {
+  --cogens-blue-1: #0E47F1;
+  --cogens-blue-2: #177DFF;
+  --cogens-accent: #6BCEFF;
+}
 
-/* Layout shell */
+/* ---------- Page background ---------- */
 .c-shell {
   display: grid;
   place-items: center;
-  min-height: 100vh;
-  padding: 3rem 1rem;
-  background: radial-gradient(1200px 600px at 70% 20%, rgba(0, 102, 255, 0.08), transparent 60%);
+  min-height: 100svh;
+  padding: 4.5rem 1rem;
+  background:
+    radial-gradient(1100px 620px at 18% 8%, rgba(23, 125, 255, 0.18), transparent 60%),
+    radial-gradient(1100px 620px at 85% 92%, rgba(14, 71, 241, 0.14), transparent 60%),
+    linear-gradient(180deg, #F7FAFF 0%, #F2F6FF 100%);
 }
 
+/* ---------- Card ---------- */
 .c-card {
-  width: min(1100px, 95vw);
-  border-radius: 20px;
+  width: min(1320px, 96vw);
+  border-radius: 28px;
   background: #fff;
   box-shadow:
-    0 20px 45px rgba(16, 24, 40, 0.10),
-    0 2px 6px rgba(16, 24, 40, 0.04);
+    0 30px 60px rgba(20, 34, 70, 0.16),
+    0 2px 8px rgba(16, 24, 40, 0.06);
   overflow: hidden;
 }
 
 .c-card__inner {
   display: grid;
-  grid-template-columns: 44% 56%;
-  gap: 0;
-  position: relative;
+  grid-template-columns: 42% 58%;
+  min-height: clamp(520px, 66vh, 780px);
 }
 
-/* LEFT PANEL (hero) */
+/* ---------- LEFT PANEL (hero) ---------- */
 .c-card__hero {
   position: relative;
   z-index: 1;
-  padding: 2.5rem 2rem 2.75rem;
-  background: linear-gradient(180deg, #0E47F1 0%, #177DFF 100%);
+  padding: 3rem 2.25rem 3rem;
   color: #fff;
-  overflow: hidden; /* prevents CTA bleeding into the right column */
+  background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
 }
 
 .c-card__title {
   margin: 0 0 0.75rem;
   font-weight: 800;
-  font-size: clamp(28px, 3.2vw, 40px);
+  font-size: clamp(36px, 4.2vw, 58px);
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
-
-.c-card__title .accent {
-  color: #6BCEFF;
-}
+.c-card__title .accent { color: var(--cogens-accent); }
 
 .c-card__subtitle {
-  margin: 0 0 1.5rem;
-  opacity: 0.9;
+  margin: 0 0 1.25rem;
+  opacity: 0.92;
+  font-size: clamp(15px, 1.2vw, 16px);
 }
 
-.c-card__cta {
-  margin-top: 1rem;
-}
-
+.c-card__cta { margin-top: 1.1rem; }
 .c-card__cta .btn {
-  padding: 12px 18px;
+  padding: 14px 22px;
   border-radius: 999px;
-  border-color: rgba(255,255,255,0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
   color: #fff;
   background: transparent;
+  font-weight: 600;
 }
 
-/* RIGHT PANEL (form) */
+/* ---------- RIGHT PANEL (form) ---------- */
 .c-card__form {
   position: relative;
-  z-index: 2;        /* ensures the form sits above the left panel */
-  padding: 2.5rem 2rem 2.75rem;
+  z-index: 2;
+  padding: 3rem 2.5rem 3rem;
   background: #fff;
+
+  /* center the form block and limit width */
+  display: flex;
+  align-items: center;
+}
+.c-card__form .c-logistration__form {
+  width: 100%;
+  max-width: 560px;
+  margin-left: auto;
 }
 
-/* If anything (like a stray CTA) is injected at the very top of the form column, hide it */
-.c-card__form > .btn,
-.c-card__form > .c-cta,
-.c-card__form > .c-cta--light {
-  display: none !important;
+/* Bigger controls */
+.c-card__form form,
+.c-logistration__form form {
+  display: grid;
+  gap: 14px;
 }
 
-/* Responsive */
+.c-card__form .form-control,
+.c-logistration__form .form-control {
+  height: 56px;
+  font-size: 17px;
+  padding: 12px 16px;
+  border-radius: 12px;
+}
+
+.c-card__form .btn-pill,
+.c-logistration__form .btn-pill {
+  min-height: 56px;
+  font-size: 17px;
+  border-radius: 999px;
+}
+
+/* Blue primary buttons (shared) */
+.btn-blue {
+  background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%) !important;
+  border: 0 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(23, 125, 255, 0.32);
+}
+.btn-blue:hover,
+.btn-blue:focus-visible {
+  filter: brightness(0.97);
+  box-shadow: 0 10px 22px rgba(23, 125, 255, 0.38);
+}
+.btn-blue:disabled,
+.btn-blue[aria-disabled="true"] {
+  opacity: .65;
+  box-shadow: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width: 1440px) {
+  .c-card { width: 1360px; }
+  .c-card__inner { grid-template-columns: 40% 60%; }
+}
 @media (max-width: 980px) {
-  .c-card__inner {
-    grid-template-columns: 1fr;
-  }
+  .c-card__inner { grid-template-columns: 1fr; }
   .c-card__hero {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
