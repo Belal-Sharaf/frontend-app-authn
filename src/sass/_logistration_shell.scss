@@ -6,11 +6,11 @@
   --cogens-blue-2: #177DFF;
   --cogens-accent: #6BCEFF;
 
-  /* Panel sizing & timing */
-  --slide-w: 42%;         /* width of the blue/hero column */
-  --slide-dur: 420ms;     /* keep in sync with SLIDE_MS in Logistration.jsx */
+  /* Equal halves + timing */
+  --slide-w: 50%;        /* blue side width = white side width */
+  --slide-dur: 420ms;    /* keep in sync with SLIDE_MS in Logistration.jsx */
 
-  /* Unified card height for smoother transitions */
+  /* Unified card height (same for login & register) */
   --card-h: clamp(720px, 72vh, 860px);
 }
 
@@ -37,7 +37,7 @@
   overflow: hidden;
 }
 
-/* Container is the positioning context for everything */
+/* Positioning context */
 .c-card__inner {
   position: relative;
   height: var(--card-h);
@@ -45,7 +45,7 @@
   overflow: hidden;
 }
 
-/* ---------- Blue overlay (slides ALL the way) ---------- */
+/* ---------- Sliding blue overlay (covers exactly half) ---------- */
 .c-card__slide {
   position: absolute;
   top: 0;
@@ -55,35 +55,34 @@
   background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
   border-radius: 28px 0 0 28px;   /* rounded when on the left */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
-  z-index: 3;                     /* under hero text, over white bg */
+  z-index: 3;                     /* sits under hero text */
   pointer-events: none;
 }
-
-/* Resting positions for overlay */
+/* Rest states for overlay */
 .c-card__inner.is-login    { --slide-left: 0; }
 .c-card__inner.is-register { --slide-left: calc(100% - var(--slide-w)); }
+/* Flip rounded corners when on the right */
+.c-card__inner.is-register .c-card__slide { border-radius: 0 28px 28px 0; }
 
-/* Flip rounded corners when the overlay is on the right */
-.c-card__inner.is-register .c-card__slide {
-  border-radius: 0 28px 28px 0;
-}
+@media (prefers-reduced-motion: reduce) { .c-card__slide { transition: none; } }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .c-card__slide { transition: none; }
-}
-
-/* ---------- LEFT PANEL (hero) — moves with the overlay ---------- */
+/* ---------- BLUE SIDE (hero) — centered content, travels fully ---------- */
 .c-card__hero {
-  position: absolute;            /* <-- key: let it leave its grid track */
-  top: 0;
-  bottom: 0;
-  left: var(--hero-left, 0);
-  width: var(--slide-w);
-  z-index: 4;                    /* above overlay so text stays readable */
-  padding: 3rem 2.25rem 3rem;
-  color: #fff;
+  position: absolute !important;
+  top: 0; bottom: 0;
+  left: var(--hero-left, 0) !important;
+  width: var(--slide-w) !important;
+  z-index: 4;
+  padding: 2.25rem;               /* equal on both axes for center layout */
+  color: #fff !important;
   background: transparent;
+
+  /* Center title + subtitle + button */
+  display: grid;
+  place-content: center;          /* vertical + horizontal centering */
+  justify-items: center;          /* center children horizontally */
+  text-align: center;
+
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
 }
 
@@ -112,38 +111,38 @@
   font-weight: 600;
 }
 
-/* ---------- RIGHT PANEL (form) — swaps fully with hero ---------- */
+/* ---------- WHITE SIDE (form) — centered block, travels fully ---------- */
 .c-card__form {
-  position: absolute;            /* <-- key: let it traverse the card */
-  top: 0;
-  bottom: 0;
-  left: var(--form-left, var(--slide-w));
-  width: calc(100% - var(--slide-w));
+  position: absolute !important;
+  top: 0; bottom: 0;
+  left: var(--form-left, var(--slide-w)) !important;
+  width: calc(100% - var(--slide-w)) !important;
   z-index: 2;
-  padding: 3rem 2.25rem 3rem;
+  padding: 2.25rem;
   background: #fff;
 
+  /* Center the whole form block in its half */
   display: grid;
-  align-content: center;         /* vertical centering within fixed height */
-  justify-items: start;          /* keep form at left padding */
+  place-content: center;          /* vertical centering */
+  justify-items: center;          /* horizontal centering */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
 }
 
-/* Where hero & form live in each state (container-relative) */
+/* Where hero & form live in each state */
 .c-card__inner.is-login {
   --hero-left: 0;
   --form-left: var(--slide-w);
 }
 .c-card__inner.is-register {
   --hero-left: calc(100% - var(--slide-w));
-  --form-left: 0; /* form fully on the left */
+  --form-left: 0;
 }
 
-/* Limit form width */
+/* Center the stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
-  width: 100%;
-  max-width: 540px;
-  margin: 0;
+  width: min(540px, 88%);
+  margin: 0 auto;
+  text-align: left;
 }
 
 /* Form title */
@@ -152,6 +151,7 @@
   font-weight: 800;
   font-size: clamp(22px, 2.2vw, 28px);
   letter-spacing: -0.01em;
+  text-align: center; /* looks nicer when the block is centered */
 }
 
 /* Larger controls */
@@ -176,7 +176,7 @@
   border-radius: 999px;
 }
 
-/* Hide any stray CTAs at the very top of the form column */
+/* Hide any stray CTAs injected at the very top of the form column */
 .c-card__form > .btn,
 .c-card__form > .c-cta,
 .c-card__form > .c-cta--light { display: none !important; }
@@ -208,7 +208,6 @@
 /* ---------- Responsive ---------- */
 @media (min-width: 1440px) {
   .c-card { width: 1360px; }
-  :root { --slide-w: 40%; }
 }
 
 @media (max-width: 980px) {
@@ -218,8 +217,8 @@
   /* Stack panels, no sliding on mobile */
   .c-card__hero,
   .c-card__form {
-    position: static;
-    width: auto;
+    position: static !important;
+    width: auto !important;
     left: 0 !important;
     transition: none;
   }
@@ -229,5 +228,8 @@
     border-bottom-right-radius: 0;
     color: #fff;
     background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
+    padding: 2rem 1.25rem;
   }
+
+  .c-card__form { padding: 2rem 1.25rem; }
 }
