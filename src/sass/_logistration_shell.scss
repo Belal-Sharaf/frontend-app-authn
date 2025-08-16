@@ -7,11 +7,19 @@
   --cogens-accent: #6BCEFF;
 
   /* Equal halves + timing */
-  --slide-w: 50%;        /* blue side width = white side width */
-  --slide-dur: 420ms;    /* keep in sync with SLIDE_MS in Logistration.jsx */
+  --slide-w: 50%;
+  --slide-dur: 420ms; /* keep in sync with SLIDE_MS in JSX */
 
   /* Unified card height (same for login & register) */
   --card-h: clamp(720px, 72vh, 860px);
+
+  /* Bigger form sizing */
+  --form-max-w: 640px;
+  --input-h: 64px;
+  --btn-h: 64px;
+  --input-fs: 18px;
+  --btn-fs: 18px;
+  --field-gap: 18px;
 }
 
 /* ---------- Page background ---------- */
@@ -41,7 +49,6 @@
 .c-card__inner {
   position: relative;
   height: var(--card-h);
-  min-height: 0;
   overflow: hidden;
 }
 
@@ -55,7 +62,7 @@
   background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
   border-radius: 28px 0 0 28px;   /* rounded when on the left */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
-  z-index: 3;                     /* sits under hero text */
+  z-index: 3;                     /* under hero text */
   pointer-events: none;
 }
 /* Rest states for overlay */
@@ -63,7 +70,6 @@
 .c-card__inner.is-register { --slide-left: calc(100% - var(--slide-w)); }
 /* Flip rounded corners when on the right */
 .c-card__inner.is-register .c-card__slide { border-radius: 0 28px 28px 0; }
-
 @media (prefers-reduced-motion: reduce) { .c-card__slide { transition: none; } }
 
 /* ---------- BLUE SIDE (hero) — centered content, travels fully ---------- */
@@ -73,14 +79,13 @@
   left: var(--hero-left, 0) !important;
   width: var(--slide-w) !important;
   z-index: 4;
-  padding: 2.25rem;               /* equal on both axes for center layout */
+  padding: 2.25rem;
   color: #fff !important;
   background: transparent;
 
-  /* Center title + subtitle + button */
   display: grid;
   place-content: center;          /* vertical + horizontal centering */
-  justify-items: center;          /* center children horizontally */
+  justify-items: center;
   text-align: center;
 
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
@@ -121,7 +126,6 @@
   padding: 2.25rem;
   background: #fff;
 
-  /* Center the whole form block in its half */
   display: grid;
   place-content: center;          /* vertical centering */
   justify-items: center;          /* horizontal centering */
@@ -140,39 +144,42 @@
 
 /* Center the stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
-  width: min(540px, 88%);
+  width: min(var(--form-max-w), 90%);
+  max-width: var(--form-max-w);
   margin: 0 auto;
   text-align: left;
 }
 
 /* Form title */
 .c-form-title {
-  margin: 0 0 12px;
+  margin: 0 0 18px;
   font-weight: 800;
   font-size: clamp(22px, 2.2vw, 28px);
   letter-spacing: -0.01em;
-  text-align: center; /* looks nicer when the block is centered */
+  text-align: center;
 }
 
 /* Larger controls */
 .c-card__form form,
 .c-logistration__form form {
   display: grid;
-  gap: 14px;
+  gap: var(--field-gap);
 }
 
 .c-card__form .form-control,
 .c-logistration__form .form-control {
-  height: 56px;
-  font-size: 17px;
-  padding: 12px 16px;
-  border-radius: 12px;
+  height: var(--input-h);
+  font-size: var(--input-fs);
+  padding: 14px 18px;
+  border-radius: 14px;
 }
 
 .c-card__form .btn-pill,
-.c-logistration__form .btn-pill {
-  min-height: 56px;
-  font-size: 17px;
+.c-logistration__form .btn-pill,
+.c-card__form .btn,
+.c-logistration__form .btn {
+  min-height: var(--btn-h);
+  font-size: var(--btn-fs);
   border-radius: 999px;
 }
 

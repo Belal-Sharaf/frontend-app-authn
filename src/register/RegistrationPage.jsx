@@ -85,9 +85,10 @@ const RegistrationPage = (props) => {
   const [temporaryErrors, setTemporaryErrors] = useState({ ...backedUpFormData.errors });
 
   const { cta, host } = queryParams;
-  const buttonLabel = cta
-    ? formatMessage(messages['create.account.cta.button'], { label: cta })
-    : formatMessage(messages['create.account.for.free.button']);
+  const buttonLabel = 'Create account';
+  //const buttonLabel = cta
+    //? formatMessage(messages['create.account.cta.button'], { label: cta })
+    //: formatMessage(messages['create.account.for.free.button']);
 
   useEffect(() => {
     if (!userPipelineDataLoaded && thirdPartyAuthApiStatus === COMPLETE_STATE) {
