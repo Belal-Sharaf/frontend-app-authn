@@ -64,16 +64,20 @@ const Logistration = ({
   };
 
   const startTransition = (e, nextMode) => {
-    if (e) e.preventDefault();
-    setSlideTo(nextMode);
+  if (e) e.preventDefault();
 
-    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const delay = prefersReduced ? 0 : SLIDE_MS;
+  // Update visuals immediately so text/forms change DURING the slide
+  setMode(nextMode);
+  setSlideTo(nextMode);
 
-    window.setTimeout(() => {
-      performRouteSwap(nextMode);
-    }, delay);
-  };
+  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const delay = prefersReduced ? 0 : SLIDE_MS;
+
+  window.setTimeout(() => {
+    performRouteSwap(nextMode);   // do navigation + backups after the slide
+  }, delay);
+};
+
 
   return (
     <div className="c-shell">

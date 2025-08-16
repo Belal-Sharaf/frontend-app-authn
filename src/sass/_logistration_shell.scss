@@ -14,9 +14,9 @@
   --card-h: clamp(720px, 72vh, 860px);
 
   /* Bigger form sizing */
-  --form-max-w: 720px;
-  --input-h: 72px;
-  --btn-h: 72px;
+  --form-max-w: 860px;
+  --input-h: 60px;
+  --btn-h: 60px;
   --input-fs: 19px;
   --btn-fs: 19px;
   --field-gap: 20px;
@@ -92,6 +92,7 @@
 }
 
 .c-card__title {
+  color:#fff;
   margin: 0 0 0.75rem;
   font-weight: 800;
   font-size: clamp(36px, 4.2vw, 58px);
@@ -144,7 +145,7 @@
 
 /* Center the stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
-  width: min(var(--form-max-w), 90%);
+  width: min(var(--form-max-w), 96%);
   max-width: var(--form-max-w);
   margin: 0 auto;
   text-align: left;
