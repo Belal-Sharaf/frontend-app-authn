@@ -43,7 +43,7 @@ const RegistrationPage = (props) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
-  const { withinShell, handleInstitutionLogin, institutionLogin } = props; // <-- withinShell NEW
+  const { withinShell, handleInstitutionLogin, institutionLogin } = props;
 
   const registrationEmbedded = isHostAvailableInQueryParams();
   const platformName = getConfig().SITE_NAME;
@@ -209,6 +209,8 @@ const RegistrationPage = (props) => {
 
   const renderFormBody = () => (
     <div className={classNames('c-logistration__form', { 'w-100 m-auto pt-2 main-content': registrationEmbedded })}>
+      <h2 className="c-form-title">Create an account</h2>
+
       <ThirdPartyAuthAlert currentProvider={currentProvider} platformName={platformName} referrer={REGISTER_PAGE} />
       <RegistrationFailure
         errorCode={errorCode.type}
@@ -272,7 +274,7 @@ const RegistrationPage = (props) => {
           name="register-user"
           type="submit"
           variant="brand"
-          className="register-button mt-4 mb-4 w-100 btn-pill"
+          className="register-button mt-4 mb-4 w-100 btn-pill btn-blue"
           state={submitState}
           labels={{ default: buttonLabel, pending: '' }}
           onClick={handleSubmit}
@@ -324,10 +326,8 @@ const RegistrationPage = (props) => {
             <Spinner animation="border" variant="primary" id="tpa-spinner" />
           </div>
         ) : withinShell ? (
-          // ✅ Shell supplies the left hero; show form only
           renderFormBody()
         ) : (
-          // Standalone two-panel layout (kept for direct routing without shell)
           <div className={classNames('c-logistration', { 'w-100 m-auto pt-4 main-content': registrationEmbedded })}>
             <aside className="c-logistration__left">
               <div className="hero">
@@ -349,7 +349,6 @@ const RegistrationPage = (props) => {
     );
   };
 
-
   if (tpaHint) {
     if (thirdPartyAuthApiStatus === PENDING_STATE) return <Skeleton height={36} />;
     const { provider, skipHintedLogin } = getTpaProvider(tpaHint, providers, secondaryProviders);
@@ -360,13 +359,13 @@ const RegistrationPage = (props) => {
 };
 
 RegistrationPage.propTypes = {
-  withinShell: PropTypes.bool,      // <-- NEW
+  withinShell: PropTypes.bool,
   institutionLogin: PropTypes.bool,
   handleInstitutionLogin: PropTypes.func,
 };
 
 RegistrationPage.defaultProps = {
-  withinShell: false,               // <-- NEW
+  withinShell: false,
   handleInstitutionLogin: null,
   institutionLogin: false,
 };

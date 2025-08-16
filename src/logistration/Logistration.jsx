@@ -30,11 +30,13 @@ const Logistration = ({
   const { formatMessage } = useIntl();
   const navigate = useNavigate();
 
+  // Ensure CSRF is available
   useEffect(() => {
     const s = getAuthService();
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
+  // Which form to show
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   useEffect(() => {
     setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');

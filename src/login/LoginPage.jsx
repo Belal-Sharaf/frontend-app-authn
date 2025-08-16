@@ -44,7 +44,7 @@ import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
 
 const LoginPage = (props) => {
   const {
-    withinShell,           // <-- NEW
+    withinShell,
     backedUpFormData,
     loginErrorCode,
     loginErrorContext,
@@ -57,7 +57,6 @@ const LoginPage = (props) => {
     institutionLogin,
     showResetPasswordSuccessBanner,
     submitState,
-    // Actions
     backupFormState,
     handleInstitutionLogin,
     getTPADataFromBackend,
@@ -148,9 +147,11 @@ const LoginPage = (props) => {
     );
   }
 
-  // ---- shared form body (no hero, no CTA) ----
+  // ---- form-only (used inside shell) ----
   const FormOnly = (
     <div className="c-logistration__form">
+      <h2 className="c-form-title">Sign in</h2>
+
       <LoginFailureMessage errorCode={errorCode.type} errorCount={errorCode.count} context={errorCode.context} />
       <ThirdPartyAuthAlert currentProvider={currentProvider} platformName={platformName} />
       <AccountActivationMessage messageType={activationMsgType} />
@@ -182,7 +183,7 @@ const LoginPage = (props) => {
           id="sign-in"
           type="submit"
           variant="brand"
-          className="w-100 btn-pill"
+          className="w-100 btn-pill btn-blue"
           state={submitState}
           labels={{ default: formatMessage(messages['sign.in.button']), pending: '' }}
           onClick={handleSubmit}
@@ -218,10 +219,8 @@ const LoginPage = (props) => {
       <RedirectLogistration success={loginResult.success} redirectUrl={loginResult.redirectUrl} finishAuthUrl={finishAuthUrl} />
 
       {withinShell ? (
-        // ✅ Shell provides the left hero; show form only here
         FormOnly
       ) : (
-        // Standalone two-panel layout (kept for direct routing without shell)
         <div className="c-logistration">
           <aside className="c-logistration__left">
             <div className="hero">
@@ -259,7 +258,7 @@ const mapStateToProps = state => {
 };
 
 LoginPage.propTypes = {
-  withinShell: PropTypes.bool,   // <-- NEW
+  withinShell: PropTypes.bool,
   backedUpFormData: PropTypes.shape({ formFields: PropTypes.shape({}), errors: PropTypes.shape({}) }),
   loginErrorCode: PropTypes.string,
   loginErrorContext: PropTypes.shape({ email: PropTypes.string, redirectUrl: PropTypes.string, context: PropTypes.shape({}) }),
@@ -285,7 +284,7 @@ LoginPage.propTypes = {
 };
 
 LoginPage.defaultProps = {
-  withinShell: false,           // <-- NEW
+  withinShell: false,
   backedUpFormData: { formFields: { emailOrUsername: '', password: '' }, errors: { emailOrUsername: '', password: '' } },
   loginErrorCode: null,
   loginErrorContext: {},
