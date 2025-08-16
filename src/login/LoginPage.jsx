@@ -1,6 +1,7 @@
+// src/login/LoginPage.jsx
 import { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
-import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
+import { REGISTER_PAGE } from '../data/constants'; // ← only what we use
 
 import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
@@ -158,11 +159,7 @@ const LoginPage = (props) => {
       <div className="c-logistration">
         {/* LEFT — hero + CTA to register */}
         <aside className="c-logistration__left">
-          {getConfig().LOGO_URL && (
-            <div className="c-logistration__brand">
-
-            </div>
-          )}
+          {/* (brand removed to avoid spacing / huge logo issues) */}
           <div className="hero">
             <h1>
               Start learning <br />
@@ -170,8 +167,9 @@ const LoginPage = (props) => {
             </h1>
             <p>High-quality courses, taught by experts.</p>
           </div>
-          <Link to={REGISTER_PAGE} className="btn btn-outline-light btn-pill">Create account</Link>
 
+          {/* Single CTA to switch to registration — uses route constant, not a hardcoded /authn path */}
+          <Link to={REGISTER_PAGE} className="btn btn-outline-light btn-pill">Create account</Link>
         </aside>
 
         {/* RIGHT — login form */}
