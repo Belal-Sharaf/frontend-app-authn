@@ -6,7 +6,7 @@
   --cogens-blue-2: #177DFF;
   --cogens-accent: #6BCEFF;
 
-  /* Slider sizing & timing */
+  /* Panel sizing & timing */
   --slide-w: 42%;         /* width of the blue/hero column */
   --slide-dur: 420ms;     /* keep in sync with SLIDE_MS in Logistration.jsx */
 
@@ -37,17 +37,15 @@
   overflow: hidden;
 }
 
+/* Container is the positioning context for everything */
 .c-card__inner {
   position: relative;
-  display: grid;
-  grid-template-columns: var(--slide-w) calc(100% - var(--slide-w));
-  height: var(--card-h);   /* fixed height for both login & register */
-  min-height: 0;           /* avoid min-height fights */
+  height: var(--card-h);
+  min-height: 0;
   overflow: hidden;
 }
 
-/* ---------- Sliding blue overlay (moves ALL the way) ---------- */
-/* Use container-relative `left` so it hits the exact right edge */
+/* ---------- Blue overlay (slides ALL the way) ---------- */
 .c-card__slide {
   position: absolute;
   top: 0;
@@ -55,9 +53,9 @@
   left: var(--slide-left, 0);
   width: var(--slide-w);
   background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
-  border-radius: 28px 0 0 28px; /* rounded when on the left */
+  border-radius: 28px 0 0 28px;   /* rounded when on the left */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
-  z-index: 3;                    /* under hero text, over white bg */
+  z-index: 3;                     /* under hero text, over white bg */
   pointer-events: none;
 }
 
@@ -75,16 +73,17 @@
   .c-card__slide { transition: none; }
 }
 
-/* ---------- LEFT PANEL (hero) ---------- */
+/* ---------- LEFT PANEL (hero) — moves with the overlay ---------- */
 .c-card__hero {
-  position: relative;
-  z-index: 4; /* above overlay so text stays readable */
+  position: absolute;            /* <-- key: let it leave its grid track */
+  top: 0;
+  bottom: 0;
+  left: var(--hero-left, 0);
+  width: var(--slide-w);
+  z-index: 4;                    /* above overlay so text stays readable */
   padding: 3rem 2.25rem 3rem;
   color: #fff;
   background: transparent;
-
-  /* Move the hero with the overlay (container-relative) */
-  left: var(--hero-left, 0);
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
 }
 
@@ -113,25 +112,32 @@
   font-weight: 600;
 }
 
-/* ---------- RIGHT PANEL (form) ---------- */
+/* ---------- RIGHT PANEL (form) — swaps fully with hero ---------- */
 .c-card__form {
-  position: relative;
+  position: absolute;            /* <-- key: let it traverse the card */
+  top: 0;
+  bottom: 0;
+  left: var(--form-left, var(--slide-w));
+  width: calc(100% - var(--slide-w));
   z-index: 2;
   padding: 3rem 2.25rem 3rem;
   background: #fff;
 
   display: grid;
-  align-content: center;  /* vertical centering within fixed height */
-  justify-items: start;   /* keep form at left padding */
-
-  /* Slide the form left by exactly the hero width on register */
-  left: var(--form-left, 0);
+  align-content: center;         /* vertical centering within fixed height */
+  justify-items: start;          /* keep form at left padding */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
 }
 
-/* Side-specific offsets (container-relative) */
-.c-card__inner.is-login    { --hero-left: 0;                           --form-left: 0; }
-.c-card__inner.is-register { --hero-left: calc(100% - var(--slide-w)); --form-left: calc(-1 * var(--slide-w)); }
+/* Where hero & form live in each state (container-relative) */
+.c-card__inner.is-login {
+  --hero-left: 0;
+  --form-left: var(--slide-w);
+}
+.c-card__inner.is-register {
+  --hero-left: calc(100% - var(--slide-w));
+  --form-left: 0; /* form fully on the left */
+}
 
 /* Limit form width */
 .c-card__form .c-logistration__form {
@@ -206,9 +212,22 @@
 }
 
 @media (max-width: 980px) {
-  .c-card__inner { grid-template-columns: 1fr; height: auto; }
-  .c-card__hero  { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .c-card__inner { height: auto; }
   .c-card__slide { display: none; }
-  /* On small screens, disable big swap; keep everything stacked */
-  .c-card__hero, .c-card__form { left: 0 !important; transition: none; }
+
+  /* Stack panels, no sliding on mobile */
+  .c-card__hero,
+  .c-card__form {
+    position: static;
+    width: auto;
+    left: 0 !important;
+    transition: none;
+  }
+
+  .c-card__hero {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    color: #fff;
+    background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
+  }
 }
