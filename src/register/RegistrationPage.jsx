@@ -277,7 +277,7 @@ const RegistrationPage = (props) => {
           variant="brand"
           className="register-button mt-4 mb-4 w-100 btn-pill btn-blue"
           state={submitState}
-          labels={{ default: buttonLabel, pending: '' }}
+          labels={{ default: buttonLabel, pending: buttonLabel }}
           onClick={handleSubmit}
           onMouseDown={(e) => e.preventDefault()}
         />

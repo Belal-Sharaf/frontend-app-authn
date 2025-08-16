@@ -14,9 +14,9 @@
   --card-h: clamp(720px, 72vh, 860px);
 
   /* Bigger form sizing */
-  --form-max-w: 820px;  /* tuned to avoid layout nudge while staying wide */
-  --input-h: 72px;
-  --btn-h: 60px;        /* slightly shorter so width dominates visually */
+  --form-max-w: 900px;  /* tuned to avoid layout nudge while staying wide */
+  --input-h: 70px;
+  --btn-h: 52px;        /* slightly shorter so width dominates visually */
   --input-fs: 19px;
   --btn-fs: 19px;
   --field-gap: 20px;
@@ -125,8 +125,10 @@
   left: var(--form-left, var(--slide-w)) !important;
   width: calc(100% - var(--slide-w)) !important;
   z-index: 2;
-  padding: 2.25rem;
+  padding: 2.25rem 1rem;
   background: #fff;
+  overflow: auto;
+  scrollbar-gutter: stable both-edges; /* prevent layout shift on scroll */
 
   display: grid;
   place-content: center;          /* vertical centering */
@@ -146,7 +148,7 @@
 
 /* Center the stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
-  width: min(var(--form-max-w), 98%);   /* wider = wider buttons */
+  width: min(var(--form-max-w), 99.2%);   /* wider = wider buttons */
   max-width: var(--form-max-w);
   margin: 0 auto;
   text-align: left;
@@ -241,4 +243,19 @@
   }
 
   .c-card__form { padding: 2rem 1.25rem; }
+}
+
+
+/* Reserve one line for help/error text to avoid layout shift */
+.c-logistration__form .form-text,
+.c-logistration__form .invalid-feedback,
+.c-logistration__form .pgn__form-text,
+.c-logistration__form .help-block {
+  display: block;
+  min-height: 18px;     /* reserve space even when empty */
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 6px;
 }
