@@ -21,6 +21,8 @@ import { backupLoginForm } from '../login/data/actions';
 import { backupRegistrationForm } from '../register/data/actions';
 import { clearThirdPartyAuthContextErrorMessage } from '../common-components/data/actions';
 
+const SLIDE_MS = 420; // keep in sync with SCSS var --slide-dur
+
 const Logistration = ({
   selectedPage,
   backupLoginForm,
@@ -36,35 +38,55 @@ const Logistration = ({
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
-  // Which form to show
+  // Current page mode
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
+
+  // Where the sliding overlay should go (controls CSS state)
+  const [slideTo, setSlideTo] = useState(mode);
+
   useEffect(() => {
-    setMode(selectedPage === REGISTER_PAGE ? 'register' : 'login');
+    const next = selectedPage === REGISTER_PAGE ? 'register' : 'login';
+    setMode(next);
+    setSlideTo(next); // snap overlay when landing directly on a route
   }, [selectedPage]);
 
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
 
-  const goLogin = () => {
-    sendTrackEvent('edx.bi.login_form.toggled', { from: 'hero', category: 'user-engagement' });
-    clearThirdPartyAuthContextErrorMessage();
-    backupRegistrationForm();
-    setMode('login');
-    navigate(updatePathWithQueryParams(LOGIN_PAGE), { replace: true });
+  const performRouteSwap = (nextMode) => {
+    if (nextMode === 'login') {
+      sendTrackEvent('edx.bi.login_form.toggled', { from: 'hero', category: 'user-engagement' });
+      clearThirdPartyAuthContextErrorMessage();
+      backupRegistrationForm();
+      setMode('login');
+      navigate(updatePathWithQueryParams(LOGIN_PAGE), { replace: true });
+    } else {
+      sendTrackEvent('edx.bi.register_form.toggled', { from: 'hero', category: 'user-engagement' });
+      clearThirdPartyAuthContextErrorMessage();
+      backupLoginForm();
+      setMode('register');
+      navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
+    }
   };
 
-  const goRegister = () => {
-    sendTrackEvent('edx.bi.register_form.toggled', { from: 'hero', category: 'user-engagement' });
-    clearThirdPartyAuthContextErrorMessage();
-    backupLoginForm();
-    setMode('register');
-    navigate(updatePathWithQueryParams(REGISTER_PAGE), { replace: true });
+  const startTransition = (e, nextMode) => {
+    if (e) e.preventDefault();
+    setSlideTo(nextMode); // kick off CSS transition
+    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const delay = prefersReduced ? 0 : SLIDE_MS;
+    window.setTimeout(() => performRouteSwap(nextMode), delay);
   };
 
   return (
     <div className="c-shell">
       <div className="c-card">
-        <div className="c-card__inner">
-          {/* LEFT — gradient hero + single CTA */}
+        <div
+          className={['c-card__inner', slideTo === 'login' ? 'is-login' : 'is-register'].join(' ')}
+          style={{ '--slide-dur': `${SLIDE_MS}ms` }}
+        >
+          {/* Sliding blue overlay */}
+          <div className="c-card__slide" aria-hidden="true" />
+
+          {/* LEFT — hero + single CTA (triggers the slide) */}
           <aside className="c-card__hero" aria-label="Welcome">
             <h3 className="c-card__title">
               Start<br />learning<br /><span className="accent">with Cogens</span>
@@ -76,7 +98,7 @@ const Logistration = ({
                 !disablePublicAccountCreation && (
                   <Link
                     to={REGISTER_PAGE}
-                    onClick={goRegister}
+                    onClick={(e) => startTransition(e, 'register')}
                     className="btn btn-outline-light btn-pill"
                   >
                     {formatMessage(registerMessages['create.account.for.free.button'])}
@@ -85,7 +107,7 @@ const Logistration = ({
               ) : (
                 <Link
                   to={LOGIN_PAGE}
-                  onClick={goLogin}
+                  onClick={(e) => startTransition(e, 'login')}
                   className="btn btn-outline-light btn-pill"
                 >
                   {formatMessage(loginMessages['sign.in.button'])}
@@ -94,7 +116,7 @@ const Logistration = ({
             </div>
           </aside>
 
-          {/* RIGHT — form only */}
+          {/* RIGHT — form only (titles are inside the pages) */}
           <main className="c-card__form">
             {mode === 'login'
               ? <LoginPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
