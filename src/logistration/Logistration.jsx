@@ -30,19 +30,20 @@ const Logistration = ({
   const { formatMessage } = useIntl();
   const navigate = useNavigate();
 
+  // Ensure CSRF is available
   useEffect(() => {
     const s = getAuthService();
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
-  // route-driven mode; slideTo drives the CSS transition
+  // mode reflects current route; slideTo controls animation target
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   const [slideTo, setSlideTo] = useState(mode);
 
   useEffect(() => {
     const next = selectedPage === REGISTER_PAGE ? 'register' : 'login';
     setMode(next);
-    setSlideTo(next);
+    setSlideTo(next); // snap overlay when landing directly
   }, [selectedPage]);
 
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
@@ -63,21 +64,24 @@ const Logistration = ({
     }
   };
 
+  // Smooth transition: swap visuals immediately, navigate after the slide;
+  // also pin scroll so the page doesn't nudge down.
   const startTransition = (e, nextMode) => {
-  if (e) e.preventDefault();
+    if (e) e.preventDefault();
 
-  // Update visuals immediately so text/forms change DURING the slide
-  setMode(nextMode);
-  setSlideTo(nextMode);
+    const pinnedY = window.scrollY;
+    setMode(nextMode);      // update text/forms now so they change DURING slide
+    setSlideTo(nextMode);   // kick off CSS slide
+    requestAnimationFrame(() => window.scrollTo(0, pinnedY));
 
-  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const delay = prefersReduced ? 0 : SLIDE_MS;
+    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const delay = prefersReduced ? 0 : SLIDE_MS;
 
-  window.setTimeout(() => {
-    performRouteSwap(nextMode);   // do navigation + backups after the slide
-  }, delay);
-};
-
+    window.setTimeout(() => {
+      performRouteSwap(nextMode);      // route swap after animation
+      window.scrollTo(0, pinnedY);     // restore in case router nudges
+    }, delay);
+  };
 
   return (
     <div className="c-shell">
@@ -89,13 +93,11 @@ const Logistration = ({
           {/* Sliding blue overlay */}
           <div className="c-card__slide" aria-hidden="true" />
 
-          {/* LEFT — hero */}
+          {/* LEFT — hero (text + single CTA), centered; label varies by mode */}
           <aside className="c-card__hero" aria-label="Welcome">
-            <h3 className="c-card__title">
+            <h3 className={['c-card__title', mode === 'login' ? 'one-line' : ''].join(' ')}>
               {mode === 'login' ? (
-                <>
-                  Welcome<br />back
-                </>
+                <>Welcome&nbsp;back!</>
               ) : (
                 <>
                   Start<br />learning<br /><span className="accent">with Cogens</span>
@@ -133,14 +135,13 @@ const Logistration = ({
             </div>
           </aside>
 
-          {/* RIGHT — form column */}
+          {/* RIGHT — form column (centered block) */}
           <main className="c-card__form">
-            {/* Removed the extra top heading so nothing sits above "Sign in" or "Create an account" */}
-            {mode === 'login' ? (
-              <LoginPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
-            ) : (
-              <RegistrationPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
-            )}
+            {/* No extra heading above the form titles */}
+            {mode === 'login'
+              ? <LoginPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
+              : <RegistrationPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
+            }
           </main>
         </div>
       </div>

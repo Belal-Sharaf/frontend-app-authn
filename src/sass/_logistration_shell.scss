@@ -14,9 +14,9 @@
   --card-h: clamp(720px, 72vh, 860px);
 
   /* Bigger form sizing */
-  --form-max-w: 860px;
-  --input-h: 60px;
-  --btn-h: 60px;
+  --form-max-w: 820px;  /* tuned to avoid layout nudge while staying wide */
+  --input-h: 72px;
+  --btn-h: 60px;        /* slightly shorter so width dominates visually */
   --input-fs: 19px;
   --btn-fs: 19px;
   --field-gap: 20px;
@@ -92,14 +92,15 @@
 }
 
 .c-card__title {
-  color:#fff;
   margin: 0 0 0.75rem;
   font-weight: 800;
   font-size: clamp(36px, 4.2vw, 58px);
   line-height: 1.05;
   letter-spacing: -0.02em;
+  color: #fff !important;             /* headline white on blue */
 }
 .c-card__title .accent { color: var(--cogens-accent); }
+.c-card__title.one-line { white-space: nowrap; }  /* keep "Welcome back" on one line */
 
 .c-card__subtitle {
   margin: 0 0 1.25rem;
@@ -145,7 +146,7 @@
 
 /* Center the stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
-  width: min(var(--form-max-w), 96%);
+  width: min(var(--form-max-w), 98%);   /* wider = wider buttons */
   max-width: var(--form-max-w);
   margin: 0 auto;
   text-align: left;
