@@ -5,8 +5,13 @@
   --cogens-blue-1: #0E47F1;
   --cogens-blue-2: #177DFF;
   --cogens-accent: #6BCEFF;
-  --slide-w: 42%;     /* width of the moving blue overlay (match left column) */
-  --slide-dur: 420ms; /* JS sets the same value via inline style */
+
+  /* Slider sizing & timing */
+  --slide-w: 42%;         /* width of the blue/hero column */
+  --slide-dur: 420ms;     /* keep in sync with SLIDE_MS in Logistration.jsx */
+
+  /* Unified card height for smoother transitions */
+  --card-h: clamp(720px, 72vh, 860px);
 }
 
 /* ---------- Page background ---------- */
@@ -36,27 +41,34 @@
   position: relative;
   display: grid;
   grid-template-columns: var(--slide-w) calc(100% - var(--slide-w));
-  min-height: clamp(520px, 66vh, 780px);
+  height: var(--card-h);   /* fixed height for both login & register */
+  min-height: 0;           /* avoid min-height fights */
   overflow: hidden;
 }
 
-/* ---------- Sliding blue overlay ---------- */
+/* ---------- Sliding blue overlay (moves ALL the way) ---------- */
+/* Use container-relative `left` so it hits the exact right edge */
 .c-card__slide {
   position: absolute;
-  inset: 0 auto 0 0;
+  top: 0;
+  bottom: 0;
+  left: var(--slide-left, 0);
   width: var(--slide-w);
   background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
-  border-radius: 28px 0 0 28px;
-  transform: translateX(var(--slide-x, 0%));
-  transition: transform var(--slide-dur) cubic-bezier(.2,.7,.2,1);
-  z-index: 3;
+  border-radius: 28px 0 0 28px; /* rounded when on the left */
+  transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
+  z-index: 3;                    /* under hero text, over white bg */
   pointer-events: none;
-  will-change: transform;
 }
 
-/* Rest states */
-.c-card__inner.is-login    { --slide-x: 0%; }
-.c-card__inner.is-register { --slide-x: calc(100% - var(--slide-w)); }
+/* Resting positions for overlay */
+.c-card__inner.is-login    { --slide-left: 0; }
+.c-card__inner.is-register { --slide-left: calc(100% - var(--slide-w)); }
+
+/* Flip rounded corners when the overlay is on the right */
+.c-card__inner.is-register .c-card__slide {
+  border-radius: 0 28px 28px 0;
+}
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
@@ -66,10 +78,14 @@
 /* ---------- LEFT PANEL (hero) ---------- */
 .c-card__hero {
   position: relative;
-  z-index: 4; /* above overlay so text remains crisp */
+  z-index: 4; /* above overlay so text stays readable */
   padding: 3rem 2.25rem 3rem;
   color: #fff;
-  background: transparent; /* actual blue is the sliding overlay */
+  background: transparent;
+
+  /* Move the hero with the overlay (container-relative) */
+  left: var(--hero-left, 0);
+  transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
 }
 
 .c-card__title {
@@ -105,11 +121,19 @@
   background: #fff;
 
   display: grid;
-  align-content: center;
-  justify-items: start; /* keep form at the left padding */
+  align-content: center;  /* vertical centering within fixed height */
+  justify-items: start;   /* keep form at left padding */
+
+  /* Slide the form left by exactly the hero width on register */
+  left: var(--form-left, 0);
+  transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
 }
 
-/* Form block width */
+/* Side-specific offsets (container-relative) */
+.c-card__inner.is-login    { --hero-left: 0;                           --form-left: 0; }
+.c-card__inner.is-register { --hero-left: calc(100% - var(--slide-w)); --form-left: calc(-1 * var(--slide-w)); }
+
+/* Limit form width */
 .c-card__form .c-logistration__form {
   width: 100%;
   max-width: 540px;
@@ -146,7 +170,7 @@
   border-radius: 999px;
 }
 
-/* Hide any stray CTAs injected at top of form column */
+/* Hide any stray CTAs at the very top of the form column */
 .c-card__form > .btn,
 .c-card__form > .c-cta,
 .c-card__form > .c-cta--light { display: none !important; }
@@ -175,30 +199,16 @@
   box-shadow: none;
 }
 
-/* ---------- Double-slider content nudge ---------- */
-.c-card__hero,
-.c-card__form {
-  transition: transform var(--slide-dur) cubic-bezier(.2,.7,.2,1);
-  will-change: transform;
-}
-
-.c-card__inner.is-register .c-card__hero { transform: translateX(6%); }
-.c-card__inner.is-register .c-card__form { transform: translateX(-6%); }
-
-.c-card__inner.is-login .c-card__hero,
-.c-card__inner.is-login .c-card__form { transform: translateX(0); }
-
-@media (prefers-reduced-motion: reduce) {
-  .c-card__hero, .c-card__form { transition: none; transform: none !important; }
-}
-
 /* ---------- Responsive ---------- */
 @media (min-width: 1440px) {
   .c-card { width: 1360px; }
   :root { --slide-w: 40%; }
 }
+
 @media (max-width: 980px) {
-  .c-card__inner { grid-template-columns: 1fr; }
-  .c-card__hero { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-  .c-card__slide { display: none; } /* overlay not meaningful in single column */
+  .c-card__inner { grid-template-columns: 1fr; height: auto; }
+  .c-card__hero  { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .c-card__slide { display: none; }
+  /* On small screens, disable big swap; keep everything stacked */
+  .c-card__hero, .c-card__form { left: 0 !important; transition: none; }
 }
