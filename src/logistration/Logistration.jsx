@@ -11,7 +11,6 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import { LoginPage } from '../login';
 import loginMessages from '../login/messages';
 import { RegistrationPage } from '../register';
-import registerMessages from '../register/messages';
 
 import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
 import { updatePathWithQueryParams } from '../data/utils';
@@ -31,20 +30,19 @@ const Logistration = ({
   const { formatMessage } = useIntl();
   const navigate = useNavigate();
 
-  // Ensure CSRF is available
   useEffect(() => {
     const s = getAuthService();
     if (s) s.getCsrfTokenService().getCsrfToken(getConfig().LMS_BASE_URL);
   }, []);
 
-  // mode reflects current route; slideTo controls animation target
+  // route-driven mode; slideTo drives the CSS transition
   const [mode, setMode] = useState(selectedPage === REGISTER_PAGE ? 'register' : 'login');
   const [slideTo, setSlideTo] = useState(mode);
 
   useEffect(() => {
     const next = selectedPage === REGISTER_PAGE ? 'register' : 'login';
     setMode(next);
-    setSlideTo(next); // snap overlay when landing directly
+    setSlideTo(next);
   }, [selectedPage]);
 
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
@@ -67,7 +65,7 @@ const Logistration = ({
 
   const startTransition = (e, nextMode) => {
     if (e) e.preventDefault();
-    setSlideTo(nextMode); // kick off CSS slide
+    setSlideTo(nextMode);
 
     const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const delay = prefersReduced ? 0 : SLIDE_MS;
@@ -87,7 +85,7 @@ const Logistration = ({
           {/* Sliding blue overlay */}
           <div className="c-card__slide" aria-hidden="true" />
 
-          {/* LEFT — hero (text + single CTA), centered; label varies by mode */}
+          {/* LEFT — hero */}
           <aside className="c-card__hero" aria-label="Welcome">
             <h3 className="c-card__title">
               {mode === 'login' ? (
@@ -101,11 +99,12 @@ const Logistration = ({
               )}
             </h3>
 
-            <p className="c-card__subtitle">
-              {mode === 'login'
-                ? 'Glad to see you again.'
-                : 'High-quality courses, taught by experts.'}
-            </p>
+            {/* Subtitle removed on LOGIN per request */}
+            {mode !== 'login' && (
+              <p className="c-card__subtitle">
+                High-quality courses, taught by experts.
+              </p>
+            )}
 
             <div className="c-card__cta">
               {mode === 'login' ? (
@@ -115,7 +114,6 @@ const Logistration = ({
                     onClick={(e) => startTransition(e, 'register')}
                     className="btn btn-outline-light btn-pill"
                   >
-                    {/* label changed per your request */}
                     Create account
                   </Link>
                 )
@@ -131,15 +129,14 @@ const Logistration = ({
             </div>
           </aside>
 
-          {/* RIGHT — form column (centered block) */}
+          {/* RIGHT — form column */}
           <main className="c-card__form">
-            {/* Optional titles above forms (kept simple & controlled here) */}
-            <h2 className="c-form-title">{mode === 'login' ? 'Welcome Back' : 'Create an account'}</h2>
-
-            {mode === 'login'
-              ? <LoginPage institutionLogin={false} handleInstitutionLogin={() => {}} />
-              : <RegistrationPage institutionLogin={false} handleInstitutionLogin={() => {}} />
-            }
+            {/* Removed the extra top heading so nothing sits above "Sign in" or "Create an account" */}
+            {mode === 'login' ? (
+              <LoginPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
+            ) : (
+              <RegistrationPage withinShell institutionLogin={false} handleInstitutionLogin={() => {}} />
+            )}
           </main>
         </div>
       </div>
