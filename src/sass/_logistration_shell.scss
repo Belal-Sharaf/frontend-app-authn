@@ -1,137 +1,105 @@
 /* src/sass/logistration.scss */
-:root{
-  --brand-primary:#1263d7;
-  --brand-primary-2:#20a0ff;
-  --card-radius:18px;
-  --shadow-lg:0 20px 50px rgba(16,24,40,.08);
+
+/* container */
+.c-shell {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 4rem 1.25rem;
+  background: radial-gradient(1200px 800px at 50% -200px, #eef5ff 0%, #f5f8ff 40%, #f7f9fe 60%, #ffffff 100%);
 }
 
-*{box-sizing:border-box}
-html,body,#root{height:100%}
+/* main card */
+.c-card {
+  width: 100%;
+  max-width: 1120px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(14, 34, 66, 0.08);
+  overflow: hidden;
 
-body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  color:#111827;
-  background:
-    radial-gradient(60rem 60rem at 15% -10%, rgba(32,160,255,.10), transparent 60%),
-    radial-gradient(70rem 70rem at 120% 110%, rgba(18,99,215,.10), transparent 60%),
-    #f7fbff;
+  &__inner {
+    display: grid;
+    grid-template-columns: 44% 56%;
+  }
 }
 
-/* center the auth card */
-.c-shell{
-  min-height:100%;
-  display:grid;
-  place-items:center;
-  padding:clamp(16px,4vw,48px);
+/* left hero */
+.c-card__hero {
+  position: relative;
+  padding: 40px 36px;
+  color: #fff;
+  background: linear-gradient(180deg, #0e4bd8 0%, #1673ff 100%);
+
+  .c-card__title {
+    font-size: 44px;
+    line-height: 1.05;
+    margin: 14px 0 8px;
+    font-weight: 800;
+
+    .accent { color: #65d3ff; font-weight: 800; }
+  }
+
+  .c-card__subtitle {
+    opacity: .95;
+    margin: 0 0 24px;
+    font-size: 16px;
+  }
+
+  .c-card__cta {
+    margin-top: 8px;
+
+    .btn {
+      padding: 12px 18px;
+      font-weight: 600;
+      border: 2px solid rgba(255,255,255,.9) !important;
+      color: #fff !important;
+      background: transparent !important;
+    }
+  }
 }
 
-/* ---- Layout for the existing Login/Registration markup (.c-logistration ...) ---- */
+/* right side */
+.c-card__form {
+  padding: 40px 36px;
 
-.c-logistration{
-  width:min(1120px,96vw);
-  margin:auto;
-  background:#fff;
-  border-radius:var(--card-radius);
-  box-shadow:var(--shadow-lg);
-  overflow:hidden;
-  display:grid;
-  grid-template-columns:44% 56%;
+  .c-form__header {
+    margin-bottom: 16px;
+
+    h1 {
+      font-size: 32px;
+      line-height: 1.1;
+      margin: 0 0 6px;
+      font-weight: 800;
+      color: #0e1b2a;
+    }
+    p {
+      margin: 0 0 16px;
+      color: #58657a;
+      font-size: 15px;
+    }
+  }
 }
 
-@media (max-width:900px){
-  .c-logistration{grid-template-columns:1fr}
+/* hide the old extra CTA block entirely if it renders for any reason */
+.c-card__ctas,
+.c-card__hero .c-cta,
+.c-card__hero .c-cta--light {
+  display: none !important;
 }
 
-/* LEFT hero */
-.c-logistration__left{
-  padding:clamp(24px,5vw,40px);
-  background:linear-gradient(135deg,var(--brand-primary) 0%,var(--brand-primary-2) 100%);
-  color:#fff;
-  position:relative;
+/* form tweaks */
+.c-card__form .btn[type="submit"],
+.c-card__form button[type="submit"] {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0e4bd8, #1d76ff) !important;
+  border: none;
 }
 
-/* soft shine */
-.c-logistration__left::after{
-  content:"";
-  position:absolute; inset:0;
-  background:
-    linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.18) 32%, rgba(255,255,255,0) 34%),
-    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,0));
-  pointer-events:none;
+/* responsive */
+@media (max-width: 980px) {
+  .c-card__inner { grid-template-columns: 1fr; }
+  .c-card__hero { padding: 28px 24px; }
+  .c-card__form { padding: 28px 24px; }
+  .c-card__form .c-form__header { text-align: left; }
 }
-
-@media (max-width:900px){ .c-logistration__left::after{display:none} }
-
-/* small logo square was here — kill it hard just in case */
-.c-logistration__brand,
-.c-logistration__brand img{ display:none !important; }
-
-/* hero text */
-.c-logistration__left .hero h1{
-  margin:0 0 10px;
-  line-height:1.06;
-  font-weight:800;
-  font-size:clamp(28px,4.2vw,42px);
-  letter-spacing:-.02em;
-}
-.c-logistration__left .hero .hl{ color:#bfe6ff; }
-.c-logistration__left .hero p{ margin:0 0 24px; opacity:.95; }
-
-/* left CTA (switch form) */
-.c-logistration__left .btn.btn-outline-light.btn-pill{
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:12px 18px;
-  border-radius:999px;
-  border:2px solid rgba(255,255,255,.85);
-  color:#fff; background:transparent;
-  font-weight:600;
-  transition:transform .06s ease, background .2s ease, border-color .2s ease;
-}
-.c-logistration__left .btn.btn-outline-light.btn-pill:hover{
-  transform:translateY(-1px); border-color:#fff; background:rgba(255,255,255,.1);
-}
-
-/* RIGHT form area */
-.c-logistration__right{ padding:clamp(20px,5vw,40px); }
-
-/* Inputs a bit rounder for nicer look */
-.c-logistration__right .pgn__form-control,
-.c-logistration__right .form-control{
-  border-radius:12px;
-  height:48px;
-}
-
-/* Force submit buttons to blue gradient (no magenta) */
-.c-logistration__right .btn-brand,
-.c-logistration__right .pgn__button--brand,
-.c-logistration__right button[type="submit"],
-.c-logistration__right .btn-primary{
-  background-image:linear-gradient(90deg, var(--brand-primary) 0%, var(--brand-primary-2) 100%) !important;
-  background-color:var(--brand-primary) !important;
-  color:#fff !important;
-  border:none !important;
-  box-shadow:0 6px 16px rgba(18,99,215,.25);
-}
-.c-logistration__right .btn-brand:hover,
-.c-logistration__right .pgn__button--brand:hover,
-.c-logistration__right button[type="submit"]:hover,
-.c-logistration__right .btn-primary:hover{
-  filter:brightness(1.03);
-}
-
-/* Tidy “Forgot password” link spacing */
-.c-logistration__right a[href*="password"]{ display:inline-block; margin-top:10px; }
-
-/* Reduce extra whitespace on very tall screens */
-@media (min-height:900px){
-  .c-shell{ padding-block:32px; }
-}
-
-/* ---- (If you also kept an outer .auth-card wrapper from earlier work, this keeps it pretty) ---- */
-.auth-card{ width:min(1120px,96vw); border-radius:var(--card-radius); background:#fff; box-shadow:var(--shadow-lg); overflow:hidden; }
-.auth-card__inner{ display:grid; grid-template-columns:44% 56%; }
-@media (max-width:900px){ .auth-card__inner{ grid-template-columns:1fr; } }
-.auth-card__left{ padding:clamp(24px,5vw,40px); background:linear-gradient(135deg,var(--brand-primary) 0%,var(--brand-primary-2) 100%); color:#fff; }
-.auth-card__right{ padding:clamp(20px,5vw,40px); }

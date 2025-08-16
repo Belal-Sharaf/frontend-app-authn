@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
 import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { useIntl } from '@edx/frontend-platform/i18n';
@@ -239,7 +239,7 @@ const RegistrationPage = (props) => {
                 </h1>
                 <p>High-quality courses, taught by experts.</p>
               </div>
-              <Link to="/authn/login" className="btn btn-outline-light btn-pill">Sign in</Link>
+              <Link to={LOGIN_PAGE} className="btn btn-outline-light btn-pill">Sign in</Link>
             </aside>
 
             {/* RIGHT — register form */}

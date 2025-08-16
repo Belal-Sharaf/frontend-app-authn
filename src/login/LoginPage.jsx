@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
+import { LOGIN_PAGE, REGISTER_PAGE } from '../data/constants';
 
 import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
@@ -169,7 +170,8 @@ const LoginPage = (props) => {
             </h1>
             <p>High-quality courses, taught by experts.</p>
           </div>
-          <Link to="/authn/register" className="btn btn-outline-light btn-pill">Create account</Link>
+          <Link to={REGISTER_PAGE} className="btn btn-outline-light btn-pill">Create account</Link>
+
         </aside>
 
         {/* RIGHT — login form */}
