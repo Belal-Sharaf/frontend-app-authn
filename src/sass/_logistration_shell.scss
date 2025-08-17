@@ -259,3 +259,17 @@
   text-overflow: ellipsis;
   margin-top: 6px;
 }
+
+/* --- ONLY widen text fields (buttons unaffected) --- */
+:root {
+  --form-field-w: 100%;
+  --form-field-max: var(--form-max-w);
+}
+.c-logistration__form .form-control,
+.c-logistration__form .pgn__form-control,
+.c-logistration__form select.form-select,
+.c-logistration__form textarea.form-control {
+  width: var(--form-field-w);
+  max-width: var(--form-field-max);
+  box-sizing: border-box;
+}
