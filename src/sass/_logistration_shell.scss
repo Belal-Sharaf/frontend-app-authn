@@ -26,7 +26,7 @@
   --form-field-max: var(--form-max-w);
 }
 
-/* ---------- Page background (Aurora Mesh) ---------- */
+/* ---------- Page background (Aurora Mesh – stronger) ---------- */
 .c-shell {
   position: relative;
   isolation: isolate;               // keeps overlay behind content
@@ -46,14 +46,14 @@
     pointer-events: none;
     z-index: 0;
     background:
-      // upper-left bloom
-      radial-gradient(1200px 760px at 18% 10%, rgba(23, 125, 255, 0.28), transparent 60%),
-      // lower-right bloom
-      radial-gradient(1200px 760px at 84% 88%, rgba(14, 71, 241, 0.24), transparent 60%),
+      // upper-left bloom (stronger)
+      radial-gradient(1200px 760px at 18% 10%, rgba(23, 125, 255, 0.40), transparent 60%),
+      // lower-right bloom (stronger)
+      radial-gradient(1200px 760px at 84% 88%, rgba(14, 71, 241, 0.32), transparent 60%),
       // icy accent near upper-right
-      radial-gradient(900px 700px at 88% 26%, rgba(107, 206, 255, 0.24), transparent 62%),
-      // gentle page vignette for focus
-      radial-gradient(120% 100% at 50% 85%, rgba(20, 34, 70, 0.06), rgba(20, 34, 70, 0) 55%);
+      radial-gradient(900px 700px at 88% 26%, rgba(107, 206, 255, 0.30), transparent 62%),
+      // bottom-center lift
+      radial-gradient(900px 420px at 50% 92%, rgba(14, 71, 241, 0.16), transparent 64%);
   }
 }
 
@@ -107,26 +107,86 @@
   position: relative;
   height: var(--card-h);
   overflow: hidden;
+
+  /* seam glow between the halves */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    transform: translateX(-0.5px);
+    width: 1px;
+    pointer-events: none;
+    z-index: 5;
+    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.45));
+    box-shadow:
+      0 0 24px rgba(23,125,255,.45),
+      0 0 2px rgba(255,255,255,.6);
+    opacity: .9;
+  }
 }
 
 /* ---------- Sliding blue overlay (covers exactly half) ---------- */
 .c-card__slide {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 0; bottom: 0;
   left: var(--slide-left, 0);
   width: var(--slide-w);
-  background: linear-gradient(200deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
+  background: linear-gradient(210deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
   border-radius: 28px 0 0 28px;   /* rounded when on the left */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
   z-index: 3;                     /* under hero text */
   pointer-events: none;
+  overflow: hidden;               /* contain overlays */
+
+  /* Animated highlights (very gentle) */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -15%;
+    pointer-events: none;
+    background:
+      radial-gradient(55% 60% at 15% 0%, rgba(255,255,255,.22), transparent 65%),
+      radial-gradient(45% 55% at 100% 100%, rgba(255,255,255,.18), transparent 65%),
+      conic-gradient(from 210deg at 60% 40%, rgba(255,255,255,.10), rgba(255,255,255,0) 70%);
+    mix-blend-mode: soft-light;
+    animation: cogensPanelDrift 18s ease-in-out infinite;
+    opacity: .85;
+  }
+
+  /* Soft micro-noise to avoid flat color banding */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.25) 50%, transparent 51%),
+      radial-gradient(1px 1px at 70% 60%, rgba(0,0,0,.20) 50%, transparent 51%),
+      radial-gradient(1px 1px at 35% 75%, rgba(255,255,255,.18) 50%, transparent 51%),
+      radial-gradient(1px 1px at 90% 35%, rgba(0,0,0,.18) 50%, transparent 51%);
+    background-size: 3px 3px, 4px 4px, 5px 5px, 6px 6px;
+    background-repeat: repeat;
+    opacity: .06;
+  }
 }
+
 /* Rest states for overlay */
 .c-card__inner.is-login    { --slide-left: 0; }
 .c-card__inner.is-register { --slide-left: calc(100% - var(--slide-w)); }
 /* Flip rounded corners when on the right */
 .c-card__inner.is-register .c-card__slide { border-radius: 0 28px 28px 0; }
+
+/* gentle drift motion */
+@keyframes cogensPanelDrift {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50%      { transform: translate3d(2%, -2%, 0) scale(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-card__slide { transition: none; }
+  .c-card__slide::before { animation: none; }
+}
 
 /* ---------- BLUE SIDE (hero) — centered content, travels fully ---------- */
 .c-card__hero {
@@ -154,6 +214,7 @@
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: #fff !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.12); /* subtle polish */
 }
 .c-card__title .accent { color: var(--cogens-accent); }
 .c-card__title.one-line { white-space: nowrap; }
@@ -280,6 +341,7 @@
 @media (max-width: 980px) {
   .c-card__inner { height: auto; }
   .c-card__slide { display: none; }
+  .c-card__inner::after { display: none; } /* hide seam on stacked layout */
 
   /* Stack panels, no sliding on mobile */
   .c-card__hero,
