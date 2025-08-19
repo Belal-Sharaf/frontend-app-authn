@@ -13,43 +13,93 @@
   /* Size preset A (compact) */
   --card-h: clamp(620px, 66vh, 760px);
 
-  /* Bigger form sizing -> compact scale */
+  /* Compact form scale */
   --form-max-w: 760px;
   --input-h: 60px;
   --btn-h: 48px;
   --input-fs: 17px;
   --btn-fs: 17px;
   --field-gap: 20px;
+
+  /* Field width controls */
+  --form-field-w: 100%;
+  --form-field-max: var(--form-max-w);
 }
 
 /* ---------- Page background (Aurora Mesh) ---------- */
 .c-shell {
+  position: relative;
+  isolation: isolate;               // keeps overlay behind content
   display: grid;
   place-items: center;
   min-height: 100vh;
   padding: 4.5rem 1rem;
 
-  /* Layered mesh gradients + soft vignette */
-  background:
-    /* upper-left cool bloom */
-    radial-gradient(1200px 760px at 18% 10%, rgba(23, 125, 255, 0.18), transparent 60%),
-    /* lower-right deep bloom */
-    radial-gradient(1200px 760px at 84% 88%, rgba(14, 71, 241, 0.16), transparent 60%),
-    /* accent glow (icy) near upper-right */
-    radial-gradient(900px 700px at 88% 26%, rgba(107, 206, 255, 0.18), transparent 62%),
-    /* base vertical wash */
-    linear-gradient(180deg, #F7FAFF 0%, #F2F6FF 100%);
+  // Base vertical wash
+  background: linear-gradient(180deg, #F7FAFF 0%, #F2F6FF 100%);
+
+  // Aurora mesh overlay (strong alphas -> clearly visible)
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      // upper-left bloom
+      radial-gradient(1200px 760px at 18% 10%, rgba(23, 125, 255, 0.28), transparent 60%),
+      // lower-right bloom
+      radial-gradient(1200px 760px at 84% 88%, rgba(14, 71, 241, 0.24), transparent 60%),
+      // icy accent near upper-right
+      radial-gradient(900px 700px at 88% 26%, rgba(107, 206, 255, 0.24), transparent 62%),
+      // gentle page vignette for focus
+      radial-gradient(120% 100% at 50% 85%, rgba(20, 34, 70, 0.06), rgba(20, 34, 70, 0) 55%);
+  }
 }
 
 /* ---------- Card ---------- */
 .c-card {
-  width: min(1120px, 92vw); /* compact width */
+  position: relative; /* host halos/shadows */
+  width: min(1120px, 92vw);
   border-radius: 28px;
   background: #fff;
   box-shadow:
     0 26px 52px rgba(20, 34, 70, 0.14),
     0 2px 8px rgba(16, 24, 40, 0.06);
   overflow: hidden;
+  z-index: 1;
+
+  // Backlight behind the card edges
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -6px;                 /* slight bleed so it peeks at corners */
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(80% 60% at 50% 45%, rgba(255,255,255,0.65), rgba(255,255,255,0) 60%),
+      radial-gradient(120% 120% at 50% 60%, rgba(20,34,70,0.06), rgba(20,34,70,0) 55%);
+  }
+
+  // Floor shadow (very soft ellipse)
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -26px;              /* sits just below the radius */
+    width: 74%;
+    height: 16px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(60% 100% at 50% 40%, rgba(0,0,0,0.22), rgba(0,0,0,0) 60%);
+    filter: blur(8px);
+    opacity: 0.22;
+  }
+
+  // Keep real content above halos
+  > * { position: relative; z-index: 1; }
 }
 
 /* Positioning context */
@@ -57,24 +107,6 @@
   position: relative;
   height: var(--card-h);
   overflow: hidden;
-}
-
-/* --- V1: Center seam glow (where blue meets white) --- */
-.c-card__inner::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-0.5px);
-  width: 1px;
-  pointer-events: none;
-  z-index: 5;
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.35));
-  box-shadow:
-    0 0 22px rgba(23,125,255,0.35),
-    0 0 2px rgba(255,255,255,0.6);
-  opacity: 0.8;
 }
 
 /* ---------- Sliding blue overlay (covers exactly half) ---------- */
@@ -89,54 +121,7 @@
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
   z-index: 3;                     /* under hero text */
   pointer-events: none;
-  overflow: hidden;               /* contain pseudo-elements */
 }
-
-/* --- V2: slow animated drift highlights on blue panel --- */
-.c-card__slide::before {
-  content: "";
-  position: absolute;
-  inset: -12%;                    /* bleed so movement never shows edges */
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 1;
-  background:
-    radial-gradient(65% 75% at 18% 0%, rgba(255,255,255,0.18), transparent 60%),
-    radial-gradient(55% 70% at 85% 105%, rgba(255,255,255,0.14), transparent 60%);
-  mix-blend-mode: soft-light;
-  animation: cogensSlideDrift 16s ease-in-out infinite;
-  opacity: .65;
-}
-
-@keyframes cogensSlideDrift {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50%      { transform: translate3d(1.8%, -1.8%, 0) scale(1.02); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .c-card__slide { transition: none; }
-  .c-card__slide::before { animation: none; }
-}
-
-/* --- V6: soft noise texture on blue panel (very subtle) --- */
-.c-card__slide::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-  /* layered tiny dots, different sizes to avoid tiling */
-  background-image:
-    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.20) 50%, transparent 51%),
-    radial-gradient(1px 1px at 70% 60%, rgba(0,0,0,0.18) 50%, transparent 51%),
-    radial-gradient(1px 1px at 35% 75%, rgba(255,255,255,0.16) 50%, transparent 51%),
-    radial-gradient(1px 1px at 90% 35%, rgba(0,0,0,0.16) 50%, transparent 51%);
-  background-size: 3px 3px, 4px 4px, 5px 5px, 6px 6px;
-  background-repeat: repeat;
-  opacity: 0.055;                 /* keep it very subtle */
-}
-
 /* Rest states for overlay */
 .c-card__inner.is-login    { --slide-left: 0; }
 .c-card__inner.is-register { --slide-left: calc(100% - var(--slide-w)); }
@@ -165,10 +150,10 @@
 .c-card__title {
   margin: 0 0 0.6rem;
   font-weight: 800;
-  font-size: clamp(34px, 4vw, 54px); /* slightly smaller */
+  font-size: clamp(34px, 4vw, 54px);
   line-height: 1.05;
   letter-spacing: -0.02em;
-  color: #fff !important;             /* headline white on blue */
+  color: #fff !important;
 }
 .c-card__title .accent { color: var(--cogens-accent); }
 .c-card__title.one-line { white-space: nowrap; }
@@ -217,7 +202,7 @@
   --form-left: 0;
 }
 
-/* Center the stack, keep inputs left-aligned */
+/* Center stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
   width: min(var(--form-max-w), 99.2%);
   max-width: var(--form-max-w);
@@ -294,7 +279,6 @@
 
 @media (max-width: 980px) {
   .c-card__inner { height: auto; }
-  .c-card__inner::after { display: none; } /* hide seam on stacked layout */
   .c-card__slide { display: none; }
 
   /* Stack panels, no sliding on mobile */
@@ -332,10 +316,6 @@
 }
 
 /* --- ONLY widen text fields (buttons unaffected) --- */
-:root {
-  --form-field-w: 100%;
-  --form-field-max: var(--form-max-w);
-}
 .c-logistration__form .form-control,
 .c-logistration__form .pgn__form-control,
 .c-logistration__form select.form-select,
