@@ -10,15 +10,15 @@
   --slide-w: 50%;
   --slide-dur: 420ms; /* keep in sync with SLIDE_MS in JSX */
 
-  /* Unified card height (same for login & register) */
-  --card-h: clamp(720px, 72vh, 860px);
+  /* Size preset A (compact) */
+  --card-h: clamp(620px, 66vh, 760px);
 
-  /* Bigger form sizing */
-  --form-max-w: 900px;  /* tuned to avoid layout nudge while staying wide */
-  --input-h: 70px;
-  --btn-h: 52px;        /* slightly shorter so width dominates visually */
-  --input-fs: 19px;
-  --btn-fs: 19px;
+  /* Bigger form sizing -> compact scale */
+  --form-max-w: 760px;
+  --input-h: 60px;
+  --btn-h: 48px;
+  --input-fs: 17px;
+  --btn-fs: 17px;
   --field-gap: 20px;
 }
 
@@ -36,11 +36,11 @@
 
 /* ---------- Card ---------- */
 .c-card {
-  width: min(1320px, 96vw);
+  width: min(1120px, 92vw); /* compact width */
   border-radius: 28px;
   background: #fff;
   box-shadow:
-    0 30px 60px rgba(20, 34, 70, 0.16),
+    0 26px 52px rgba(20, 34, 70, 0.14),
     0 2px 8px rgba(16, 24, 40, 0.06);
   overflow: hidden;
 }
@@ -52,6 +52,24 @@
   overflow: hidden;
 }
 
+/* --- V1: Center seam glow (where blue meets white) --- */
+.c-card__inner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-0.5px);
+  width: 1px;
+  pointer-events: none;
+  z-index: 5;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.35));
+  box-shadow:
+    0 0 22px rgba(23,125,255,0.35),
+    0 0 2px rgba(255,255,255,0.6);
+  opacity: 0.8;
+}
+
 /* ---------- Sliding blue overlay (covers exactly half) ---------- */
 .c-card__slide {
   position: absolute;
@@ -59,18 +77,64 @@
   bottom: 0;
   left: var(--slide-left, 0);
   width: var(--slide-w);
-  background: linear-gradient(180deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
+  background: linear-gradient(200deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%);
   border-radius: 28px 0 0 28px;   /* rounded when on the left */
   transition: left var(--slide-dur) cubic-bezier(.2,.7,.2,1);
   z-index: 3;                     /* under hero text */
   pointer-events: none;
+  overflow: hidden;               /* contain pseudo-elements */
 }
+
+/* --- V2: slow animated drift highlights on blue panel --- */
+.c-card__slide::before {
+  content: "";
+  position: absolute;
+  inset: -12%;                    /* bleed so movement never shows edges */
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(65% 75% at 18% 0%, rgba(255,255,255,0.18), transparent 60%),
+    radial-gradient(55% 70% at 85% 105%, rgba(255,255,255,0.14), transparent 60%);
+  mix-blend-mode: soft-light;
+  animation: cogensSlideDrift 16s ease-in-out infinite;
+  opacity: .65;
+}
+
+@keyframes cogensSlideDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(1.8%, -1.8%, 0) scale(1.02); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-card__slide { transition: none; }
+  .c-card__slide::before { animation: none; }
+}
+
+/* --- V6: soft noise texture on blue panel (very subtle) --- */
+.c-card__slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  /* layered tiny dots, different sizes to avoid tiling */
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.20) 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 60%, rgba(0,0,0,0.18) 50%, transparent 51%),
+    radial-gradient(1px 1px at 35% 75%, rgba(255,255,255,0.16) 50%, transparent 51%),
+    radial-gradient(1px 1px at 90% 35%, rgba(0,0,0,0.16) 50%, transparent 51%);
+  background-size: 3px 3px, 4px 4px, 5px 5px, 6px 6px;
+  background-repeat: repeat;
+  opacity: 0.055;                 /* keep it very subtle */
+}
+
 /* Rest states for overlay */
 .c-card__inner.is-login    { --slide-left: 0; }
 .c-card__inner.is-register { --slide-left: calc(100% - var(--slide-w)); }
 /* Flip rounded corners when on the right */
 .c-card__inner.is-register .c-card__slide { border-radius: 0 28px 28px 0; }
-@media (prefers-reduced-motion: reduce) { .c-card__slide { transition: none; } }
 
 /* ---------- BLUE SIDE (hero) — centered content, travels fully ---------- */
 .c-card__hero {
@@ -79,7 +143,7 @@
   left: var(--hero-left, 0) !important;
   width: var(--slide-w) !important;
   z-index: 4;
-  padding: 2.25rem;
+  padding: 1.75rem;               /* compact padding */
   color: #fff !important;
   background: transparent;
 
@@ -92,25 +156,25 @@
 }
 
 .c-card__title {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.6rem;
   font-weight: 800;
-  font-size: clamp(36px, 4.2vw, 58px);
+  font-size: clamp(34px, 4vw, 54px); /* slightly smaller */
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: #fff !important;             /* headline white on blue */
 }
 .c-card__title .accent { color: var(--cogens-accent); }
-.c-card__title.one-line { white-space: nowrap; }  /* keep "Welcome back" on one line */
+.c-card__title.one-line { white-space: nowrap; }
 
 .c-card__subtitle {
-  margin: 0 0 1.25rem;
+  margin: 0 0 1.1rem;
   opacity: 0.92;
-  font-size: clamp(15px, 1.2vw, 16px);
+  font-size: clamp(14px, 1.1vw, 16px);
 }
 
-.c-card__cta { margin-top: 1.1rem; }
+.c-card__cta { margin-top: 1rem; }
 .c-card__cta .btn {
-  padding: 14px 22px;
+  padding: 12px 20px;
   border-radius: 999px;
   border: 1.5px solid rgba(255, 255, 255, 0.92);
   color: #fff;
@@ -125,7 +189,7 @@
   left: var(--form-left, var(--slide-w)) !important;
   width: calc(100% - var(--slide-w)) !important;
   z-index: 2;
-  padding: 2.25rem 1rem;
+  padding: 1.75rem 1rem;          /* compact padding */
   background: #fff;
   overflow: auto;
   scrollbar-gutter: stable both-edges; /* prevent layout shift on scroll */
@@ -148,7 +212,7 @@
 
 /* Center the stack, keep inputs left-aligned */
 .c-card__form .c-logistration__form {
-  width: min(var(--form-max-w), 99.2%);   /* wider = wider buttons */
+  width: min(var(--form-max-w), 99.2%);
   max-width: var(--form-max-w);
   margin: 0 auto;
   text-align: left;
@@ -156,9 +220,9 @@
 
 /* Form title */
 .c-form-title {
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   font-weight: 800;
-  font-size: clamp(22px, 2.2vw, 28px);
+  font-size: clamp(20px, 2vw, 26px);
   letter-spacing: -0.01em;
   text-align: center;
 }
@@ -174,7 +238,7 @@
 .c-logistration__form .form-control {
   height: var(--input-h);
   font-size: var(--input-fs);
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-radius: 14px;
 }
 
@@ -218,11 +282,12 @@
 
 /* ---------- Responsive ---------- */
 @media (min-width: 1440px) {
-  .c-card { width: 1360px; }
+  .c-card { width: 1220px; } /* keep proportion on very wide screens */
 }
 
 @media (max-width: 980px) {
   .c-card__inner { height: auto; }
+  .c-card__inner::after { display: none; } /* hide seam on stacked layout */
   .c-card__slide { display: none; }
 
   /* Stack panels, no sliding on mobile */
@@ -245,14 +310,13 @@
   .c-card__form { padding: 2rem 1.25rem; }
 }
 
-
 /* Reserve one line for help/error text to avoid layout shift */
 .c-logistration__form .form-text,
 .c-logistration__form .invalid-feedback,
 .c-logistration__form .pgn__form-text,
 .c-logistration__form .help-block {
   display: block;
-  min-height: 18px;     /* reserve space even when empty */
+  min-height: 18px;
   line-height: 18px;
   white-space: nowrap;
   overflow: hidden;
