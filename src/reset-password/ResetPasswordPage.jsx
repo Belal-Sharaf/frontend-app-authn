@@ -153,7 +153,7 @@ const ResetPasswordPage = (props) => {
           <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
             <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
           </Tabs>
-          <div id="main-content" className="main-content">
+          <div id="main-content" className="main-content cogens-split" data-hero="Reset your password">
             <div className="mw-xs">
               <ResetPasswordFailure errorCode={errorCode} errorMsg={props.errorMsg} />
               <h4>{formatMessage(messages['reset.password'])}</h4>
