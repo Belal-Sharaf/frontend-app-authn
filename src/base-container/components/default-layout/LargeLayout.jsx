@@ -13,7 +13,7 @@ const LargeLayout = () => {
 
   return (
     <div className="w-50 d-flex">
-      {/* Left banner pane */}
+      {/* Left banner pane (now gradient + no copy) */}
       <div className="col-md-9 bg-primary-400 cogens-hero">
         <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
           <Image className="logo position-absolute" alt={getConfig().SITE_NAME} src={getConfig().LOGO_WHITE_URL} />
@@ -34,7 +34,7 @@ const LargeLayout = () => {
         </div>
       </div>
 
-      {/* Right white wedge (unchanged) */}
+      {/* Right wedge (hidden via CSS) */}
       <div className="col-md-3 bg-white p-0">
         <svg className="ml-n1 w-100 h-100 large-screen-svg-primary" preserveAspectRatio="xMaxYMin meet">
           <g transform="skewX(171.6)">

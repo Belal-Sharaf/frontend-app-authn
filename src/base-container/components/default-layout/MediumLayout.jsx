@@ -40,7 +40,7 @@ const MediumLayout = () => {
           </div>
         </div>
 
-        {/* Right white wedge (unchanged) */}
+        {/* Right white wedge (hidden via CSS) */}
         <div className="col-md-2 bg-white p-0">
           <svg className="w-100 h-100 medium-screen-svg-primary" preserveAspectRatio="xMaxYMin meet">
             <g transform="skewX(168)">

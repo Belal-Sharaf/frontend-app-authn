@@ -1,17 +1,18 @@
-/* Brand blue hero for DefaultLayout */
+/* Brand blue hero + clean layout for DefaultLayout */
+
 :root {
   --cogens-blue-1: #0E47F1;
   --cogens-blue-2: #177DFF;
 }
 
-/* Apply blue gradient and keep structure intact */
+/* Apply blue gradient to the left banner pane */
 .cogens-hero {
   position: relative;
   background: linear-gradient(210deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%) !important;
   overflow: hidden;
 }
 
-/* Hide the default hero copy/art inside the left pane */
+/* Hide default hero copy/art on the banner */
 .cogens-hero .main-heading,
 .cogens-hero .display-2,
 .cogens-hero h1,
@@ -19,4 +20,30 @@
 .cogens-hero .medium-yellow-line,
 .cogens-hero .small-yellow-line {
   display: none !important;
+}
+
+/* Remove the diagonal wedge column (right white skew) and expand the banner */
+.cogens-hero + .bg-white,
+.cogens-hero + .bg-white > svg {
+  display: none !important;
+}
+.cogens-hero.col-md-9,
+.cogens-hero.col-md-10 {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+/* Kill all top stripes so the page is clean */
+.extra-large-screen-top-stripe,
+.medium-screen-top-stripe,
+.small-screen-top-stripe {
+  display: none !important;
+}
+
+/* Keep the logo visible on the banner */
+.cogens-hero .logo,
+.cogens-hero .logo-small {
+  position: absolute;
+  top: 2rem;
+  left: 1.5rem;
 }
