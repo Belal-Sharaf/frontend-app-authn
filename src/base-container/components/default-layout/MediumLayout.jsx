@@ -6,7 +6,6 @@ import { Hyperlink, Image } from '@openedx/paragon';
 import classNames from 'classnames';
 
 import './cogens-hero.scss';
-import './index.scss';
 import messages from './messages';
 
 const MediumLayout = () => {
