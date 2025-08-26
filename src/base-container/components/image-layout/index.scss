@@ -1,3 +1,4 @@
+/* === image-layout/index.scss (modified) === */
 .company-logo {
   width: 71px;
   margin-top: 2rem;
@@ -12,12 +13,64 @@
   }
 }
 
-.banner__image {
-  background-size: cover;
-  background-repeat: no-repeat;
-  border:none;
+/* ---------- Cogens blue hero replacement ---------- */
+:root {
+  --cogens-blue-1: #0E47F1;
+  --cogens-blue-2: #177DFF;
+  --cogens-accent: #6BCEFF;
 }
 
+/* The left pane element in ImageLayout uses this class */
+.banner__image {
+  position: relative;
+  overflow: hidden;
+
+  /* Replace any background image with our gradient */
+  background: linear-gradient(210deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  border: none;
+
+  /* Diagonal edge to match login */
+  clip-path: polygon(0 0, 92% 0, 84% 100%, 0% 100%);
+}
+
+/* Kill the default hero text/art inside the left pane */
+.banner__image .banner__heading,
+.banner__image h1,
+.banner__image h2,
+.banner__image p,
+.banner__image figure,
+.banner__image img,
+.banner__image svg {
+  display: none !important;
+}
+
+/* Subtle mesh/glow overlay for depth */
+.banner__image::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  opacity: .9;
+  background:
+    radial-gradient(55% 60% at 15% 0%, rgba(255,255,255,.22), transparent 65%),
+    radial-gradient(45% 55% at 100% 100%, rgba(255,255,255,.18), transparent 65%),
+    radial-gradient(1200px 760px at 18% 10%, rgba(23,125,255,.25), transparent 60%),
+    radial-gradient(1200px 760px at 84% 88%, rgba(14,71,241,.18), transparent 60%),
+    radial-gradient(900px 700px at 88% 26%, rgba(107,206,255,.20), transparent 60%);
+}
+
+/* ---------- Responsive tweaks ---------- */
+@media (max-width: 980px) {
+  .banner__image {
+    clip-path: none;      /* remove diagonal on small screens */
+    min-height: 40vh;     /* keep some hero height when stacked */
+  }
+}
+
+/* Keep if other breakpoints depend on banner__heading; harmless since it's hidden above */
 @media (min-width: 464px) and (max-width: 575.98px) {
   .banner__heading {
     font-size: 60px;
