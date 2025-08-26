@@ -5,13 +5,14 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink, Image } from '@openedx/paragon';
 import classNames from 'classnames';
 
+import './cogens-hero.scss';
 import messages from './messages';
 
 const SmallLayout = () => {
   const { formatMessage } = useIntl();
 
   return (
-    <span className="bg-primary-400 w-100">
+    <span className="bg-primary-400 w-100 cogens-hero">
       <div className="col-md-12 small-screen-top-stripe" />
       <div>
         <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
@@ -19,11 +20,7 @@ const SmallLayout = () => {
         </Hyperlink>
         <div className="d-flex align-items-center m-3.5">
           <div className={classNames({ 'small-yellow-line mr-n2.5': getConfig().SITE_NAME === 'edX' })} />
-          <h1
-            className={classNames(
-              'text-white mt-3.5 mb-3.5',
-            )}
-          >
+          <h1 className="text-white mt-3.5 mb-3.5">
             <span>
               {formatMessage(messages['start.learning'])}{' '}
               <span className="text-accent-a d-inline-block">

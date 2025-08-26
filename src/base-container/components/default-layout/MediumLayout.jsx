@@ -5,6 +5,8 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink, Image } from '@openedx/paragon';
 import classNames from 'classnames';
 
+import './cogens-hero.scss';
+import './index.scss';
 import messages from './messages';
 
 const MediumLayout = () => {
@@ -14,7 +16,8 @@ const MediumLayout = () => {
     <>
       <div className="w-100 medium-screen-top-stripe" />
       <div className="w-100 p-0 mb-3 d-flex">
-        <div className="col-md-10 bg-primary-400">
+        {/* Left banner pane */}
+        <div className="col-md-10 bg-primary-400 cogens-hero">
           <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
             <Image alt={getConfig().SITE_NAME} className="logo" src={getConfig().LOGO_WHITE_URL} />
           </Hyperlink>
@@ -37,6 +40,8 @@ const MediumLayout = () => {
             </div>
           </div>
         </div>
+
+        {/* Right white wedge (unchanged) */}
         <div className="col-md-2 bg-white p-0">
           <svg className="w-100 h-100 medium-screen-svg-primary" preserveAspectRatio="xMaxYMin meet">
             <g transform="skewX(168)">

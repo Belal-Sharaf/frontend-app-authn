@@ -1,0 +1,22 @@
+/* Brand blue hero for DefaultLayout */
+:root {
+  --cogens-blue-1: #0E47F1;
+  --cogens-blue-2: #177DFF;
+}
+
+/* Apply blue gradient and keep structure intact */
+.cogens-hero {
+  position: relative;
+  background: linear-gradient(210deg, var(--cogens-blue-1) 0%, var(--cogens-blue-2) 100%) !important;
+  overflow: hidden;
+}
+
+/* Hide the default hero copy/art inside the left pane */
+.cogens-hero .main-heading,
+.cogens-hero .display-2,
+.cogens-hero h1,
+.cogens-hero .large-yellow-line,
+.cogens-hero .medium-yellow-line,
+.cogens-hero .small-yellow-line {
+  display: none !important;
+}
