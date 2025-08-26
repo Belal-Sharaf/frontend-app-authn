@@ -1,4 +1,5 @@
 @use "@openedx/paragon/styles/css/core/custom-media-breakpoints" as paragonCustomMediaBreakpoints;
 @import "sass/style";
 @import './sass/logistration_shell';
-@import "./sass/authn_split";  
+@import "./sass/forgot_password";
+@import "./sass/reset_password";  
