@@ -3,38 +3,40 @@ import React from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink, Image } from '@openedx/paragon';
-import classNames from 'classnames';
+import { useLocation } from 'react-router-dom';
 
 import './cogens-hero.scss';
 import messages from './messages';
 
 const LargeLayout = () => {
   const { formatMessage } = useIntl();
+  const { pathname } = useLocation();
+
+  const isReset = pathname && pathname.startsWith('/authn/reset');
+
+  const line1 = isReset
+    ? formatMessage(messages['forgot.password.hero.line1'])
+    : formatMessage(messages['start.learning']);
+
+  const line2 = isReset
+    ? formatMessage(messages['forgot.password.hero.line2'])
+    : formatMessage(messages['with.site.name'], { siteName: getConfig().SITE_NAME });
 
   return (
     <div className="w-50 d-flex">
-      {/* Left banner pane (now gradient + no copy) */}
-      <div className="col-md-9 bg-primary-400 cogens-hero">
+      {/* Blue hero */}
+      <div className="col-md-9 cogens-hero">
         <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
           <Image className="logo position-absolute" alt={getConfig().SITE_NAME} src={getConfig().LOGO_WHITE_URL} />
         </Hyperlink>
-        <div className="min-vh-100 d-flex align-items-center">
-          <div className={classNames({ 'large-yellow-line mr-n4.5': getConfig().SITE_NAME === 'edX' })} />
-          <h1
-            className={classNames(
-              'display-2 text-white mw-xs',
-              { 'ml-6': getConfig().SITE_NAME !== 'edX' },
-            )}
-          >
-            {formatMessage(messages['start.learning'])}
-            <div className="text-accent-a">
-              {formatMessage(messages['with.site.name'], { siteName: getConfig().SITE_NAME })}
-            </div>
-          </h1>
-        </div>
+
+        <h1 className="cogens-hero__title">
+          {line1}
+          <div className="accent">{line2}</div>
+        </h1>
       </div>
 
-      {/* Right wedge (hidden via CSS) */}
+      {/* Right wedge (hidden via CSS but kept for layout integrity) */}
       <div className="col-md-3 bg-white p-0">
         <svg className="ml-n1 w-100 h-100 large-screen-svg-primary" preserveAspectRatio="xMaxYMin meet">
           <g transform="skewX(171.6)">

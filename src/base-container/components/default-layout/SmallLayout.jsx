@@ -3,33 +3,35 @@ import React from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink, Image } from '@openedx/paragon';
-import classNames from 'classnames';
+import { useLocation } from 'react-router-dom';
 
 import './cogens-hero.scss';
 import messages from './messages';
 
 const SmallLayout = () => {
   const { formatMessage } = useIntl();
+  const { pathname } = useLocation();
+
+  const isReset = pathname && pathname.startsWith('/authn/reset');
+
+  const line1 = isReset
+    ? formatMessage(messages['forgot.password.hero.line1'])
+    : formatMessage(messages['start.learning']);
+
+  const line2 = isReset
+    ? formatMessage(messages['forgot.password.hero.line2'])
+    : formatMessage(messages['with.site.name'], { siteName: getConfig().SITE_NAME });
 
   return (
-    <span className="bg-primary-400 w-100 cogens-hero">
+    <span className="w-100 cogens-hero">
       <div className="col-md-12 small-screen-top-stripe" />
-      <div>
-        <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
-          <Image className="logo-small" alt={getConfig().SITE_NAME} src={getConfig().LOGO_WHITE_URL} />
-        </Hyperlink>
-        <div className="d-flex align-items-center m-3.5">
-          <div className={classNames({ 'small-yellow-line mr-n2.5': getConfig().SITE_NAME === 'edX' })} />
-          <h1 className="text-white mt-3.5 mb-3.5">
-            <span>
-              {formatMessage(messages['start.learning'])}{' '}
-              <span className="text-accent-a d-inline-block">
-                {formatMessage(messages['with.site.name'], { siteName: getConfig().SITE_NAME })}
-              </span>
-            </span>
-          </h1>
-        </div>
-      </div>
+      <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
+        <Image className="logo-small" alt={getConfig().SITE_NAME} src={getConfig().LOGO_WHITE_URL} />
+      </Hyperlink>
+
+      <h1 className="cogens-hero__title">
+        {line1} <span className="accent">{line2}</span>
+      </h1>
     </span>
   );
 };
